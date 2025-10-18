@@ -75,9 +75,9 @@ while True:
 	process_column(Entities.Pumpkin, Grounds.Soil, Hats.Purple_Hat)
 	move(East)
 	
-	# Column 3: Carrots (need soil)
-	#print("Processing Carrot column")
-	process_column(Entities.Carrot, Grounds.Soil, Hats.Purple_Hat)
+	# Column 3: Pumpkins (need soil)
+	#print("Processing Pumpkin column")
+	process_column(Entities.Pumpkin, Grounds.Soil, Hats.Purple_Hat)
 	move(East)
 	
 	# Column 4: Carrots (need soil)
