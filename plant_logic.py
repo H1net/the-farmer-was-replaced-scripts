@@ -34,7 +34,11 @@ def find_plant_for_missing_resource(missing_item):
 		return Entities.Grass  # Fallback to grass
 
 # Helper function to determine what to plant based on available resources
-def get_plant_to_use(intended_plant):
+def get_plant_to_use(intended_plant, depth=0):
+	# Prevent infinite recursion
+	if depth > 10:
+		return Entities.Grass
+	
 	# Special case: Grass has no cost
 	if intended_plant == Entities.Grass:
 		return Entities.Grass
@@ -46,11 +50,19 @@ def get_plant_to_use(intended_plant):
 	# Find what resource we're missing
 	missing_item = get_missing_resource(intended_plant)
 	
+	# Safety check: if we can't determine missing resource, fallback to grass
+	if missing_item == None:
+		return Entities.Grass
+	
 	# Find what plant produces that resource
 	fallback_plant = find_plant_for_missing_resource(missing_item)
 	
+	# Safety check: if fallback is the same as intended, we have a circular dependency
+	if fallback_plant == intended_plant:
+		return Entities.Grass
+	
 	# Recursively check if we can afford the fallback
-	return get_plant_to_use(fallback_plant)
+	return get_plant_to_use(fallback_plant, depth + 1)
 
 # Helper function to harvest and plant a specific entity
 def harvest_and_plant(intended_plant, required_ground_type=Grounds.Grassland):
