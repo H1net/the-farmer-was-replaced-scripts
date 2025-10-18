@@ -224,22 +224,22 @@ def is_cactus_sorted():
 	
 	# Check North neighbor (should be >= current size)
 	north_size = measure(North)
-	if north_size is not None and north_size != -1 and north_size < current_size:
+	if north_size != None and north_size != -1 and north_size < current_size:
 		return False
 	
 	# Check East neighbor (should be >= current size)
 	east_size = measure(East)
-	if east_size is not None and east_size != -1 and east_size < current_size:
+	if east_size != None and east_size != -1 and east_size < current_size:
 		return False
 	
 	# Check South neighbor (should be <= current size)
 	south_size = measure(South)
-	if south_size is not None and south_size != -1 and south_size > current_size:
+	if south_size != None and south_size != -1 and south_size > current_size:
 		return False
 	
 	# Check West neighbor (should be <= current size)
 	west_size = measure(West)
-	if west_size is not None and west_size != -1 and west_size > current_size:
+	if west_size != None and west_size != -1 and west_size > current_size:
 		return False
 	
 	return True
@@ -261,7 +261,7 @@ def sort_cactus_column():
 				above_size = measure(North)
 				
 				# Only swap if both sizes are valid numbers
-				if (current_size is not None and above_size is not None and 
+				if (current_size != None and above_size != None and 
 					current_size != -1 and above_size != -1 and current_size > above_size):
 					# Move up to swap
 					move(North)
