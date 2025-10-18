@@ -6,12 +6,18 @@ import config
 def can_afford_plant(entity):
 	cost = get_cost(entity)
 	if cost == None:
+		print("DEBUG: No cost for", entity, "- can afford")
 		return True  # No cost means we can afford it (like Grass)
 	
+	print("DEBUG: Checking cost for", entity, ":", cost)
 	for item in cost:
 		amount_needed = cost[item]
-		if num_items(item) < amount_needed:
+		amount_have = num_items(item)
+		print("DEBUG: Need", amount_needed, "of", item, "have", amount_have)
+		if amount_have < amount_needed:
+			print("DEBUG: Cannot afford", entity, "- need", amount_needed, "of", item, "but only have", amount_have)
 			return False
+	print("DEBUG: Can afford", entity)
 	return True
 
 # Helper function to find missing resources
