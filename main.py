@@ -5,10 +5,12 @@ import plant_logic
 import movement
 import state_manager
 import unlock_planner
+import resource_manager
 
 # Initialize systems
 state_manager.initialize_farm_state()
 unlock_planner.initialize_unlock_planner()
+resource_manager.initialize_resource_manager()
 
 # ===== MAIN FARMING LOOP =====
 while True:
@@ -32,6 +34,11 @@ while True:
 	# If we successfully unlocked something, optimize farm layout
 	if unlock_success:
 		unlock_planner.optimize_farm_for_current_unlock()
+	
+	# Check for resource management needs
+	resource_start_time = get_time()
+	resource_emergency = resource_manager.implement_emergency_production()
+	resource_end_time = get_time()
 	
 	# Check and replant any dead pumpkins using intelligent movement
 	pumpkin_start_time = get_time()
@@ -95,13 +102,27 @@ while True:
 	else:
 		ticks_per_second = 0
 	unlock_time = unlock_end_time - unlock_start_time
+	resource_time = resource_end_time - resource_start_time
 	pumpkin_time = pumpkin_end_time - pumpkin_start_time
 	task_time = task_end_time - task_start_time
 	column_time = column_end_time - column_start_time
 	
 	quick_print("Cycle completed in " + str(cycle_time) + "s, " + str(total_ticks) + " ticks, " + str(ticks_per_second) + " ticks/s")
-	quick_print("Unlock: " + str(unlock_time) + "s, Dead pumpkins: " + str(pumpkin_time) + "s, Tasks: " + str(task_time) + "s, Columns: " + str(column_time) + "s")
+	quick_print("Unlock: " + str(unlock_time) + "s, Resources: " + str(resource_time) + "s, Dead pumpkins: " + str(pumpkin_time) + "s, Tasks: " + str(task_time) + "s, Columns: " + str(column_time) + "s")
 	
 	# Show unlock progress with enhanced information
 	unlock_info = unlock_planner.get_unlock_debug_info()
 	quick_print("🚀 " + unlock_info)
+	
+	# Show resource management status
+	if resource_emergency:
+		quick_print("⚠️  EMERGENCY: Resource production boost activated")
+	
+	# Show resource statistics every 10 cycles
+	cycle_count = get_tick_count() // 1000  # Approximate cycle count
+	if cycle_count % 10 == 0:
+		resource_stats = resource_manager.get_resource_stats()
+		quick_print("📊 Resource Status: Hay=" + str(resource_stats['current_resources'][Items.Hay]) + 
+					" Wood=" + str(resource_stats['current_resources'][Items.Wood]) + 
+					" Carrot=" + str(resource_stats['current_resources'][Items.Carrot]) + 
+					" Power=" + str(resource_stats['current_resources'][Items.Power]))
