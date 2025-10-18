@@ -52,7 +52,7 @@ def find_plant_for_missing_resource(missing_item):
 		return Entities.Grass  # Fallback to grass
 
 # Helper function to determine what to plant based on available resources
-def get_plant_to_use(intended_plant, depth=0):
+def get_plant_to_use(intended_plant, depth):
 	# Prevent infinite recursion
 	if depth > 10:
 		#print("Max recursion depth reached for", intended_plant, "- falling back to grass")
@@ -92,7 +92,7 @@ def get_plant_to_use(intended_plant, depth=0):
 	return get_plant_to_use(fallback_plant, depth + 1)
 
 # Helper function to harvest and plant a specific entity
-def harvest_and_plant(intended_plant, required_ground_type=Grounds.Grassland):
+def harvest_and_plant(intended_plant, required_ground_type):
 	pos_x, pos_y = get_pos_x(), get_pos_y()
 	
 	# Only water trees (they grow slowly and need the help)
@@ -108,7 +108,7 @@ def harvest_and_plant(intended_plant, required_ground_type=Grounds.Grassland):
 	#	#print("Used fertilizer at", pos_x, pos_y)
 	
 	# Determine what to actually plant based on available resources
-	actual_plant = get_plant_to_use(intended_plant)
+	actual_plant = get_plant_to_use(intended_plant, 0)
 	
 	# Debug: Show what we're planting vs what was intended
 	if actual_plant != intended_plant:
@@ -150,7 +150,7 @@ def harvest_and_plant(intended_plant, required_ground_type=Grounds.Grassland):
 	)
 
 # Helper function to process one column
-def process_column(intended_plant, required_ground_type=Grounds.Grassland, hat_color=None):
+def process_column(intended_plant, required_ground_type, hat_color):
 	if hat_color:
 		change_hat(hat_color)
 		#print("Changed to", hat_color, "hat")

@@ -1,13 +1,28 @@
 # ===== UNLOCK PLANNER =====
 # Manages unlock progression and resource planning
 
-# Unlock priority list (configurable)
+# Comprehensive unlock priority system
 unlock_priority = [
+	# Phase 1: Speed and Expansion (Core efficiency)
 	Unlocks.Speed,      # Faster farming = faster everything
 	Unlocks.Expand,     # More tiles = more production
-	Unlocks.Speed,      # Stack speed upgrades
-	Unlocks.Carrots,    # Unlock new crops as needed
-	# Add more as needed
+	Unlocks.Speed,      # Stack speed upgrades for maximum efficiency
+	Unlocks.Expand,     # More expansion for larger farms
+	
+	# Phase 2: Essential Crops (Resource diversity)
+	Unlocks.Carrots,    # Unlock carrots for pumpkin production
+	Unlocks.Pumpkins,   # Unlock pumpkins for mega-pumpkin bonuses
+	Unlocks.Sunflowers, # Unlock sunflowers for power generation
+	
+	# Phase 3: Advanced Crops (Specialized production)
+	Unlocks.Trees,      # Unlock trees for wood production
+	Unlocks.Cactus,     # Unlock cactus for specialized farming
+	
+	# Phase 4: Additional Speed/Expansion (Scaling)
+	Unlocks.Speed,      # More speed upgrades
+	Unlocks.Expand,     # More expansion
+	Unlocks.Speed,      # Final speed upgrade
+	Unlocks.Expand,     # Final expansion
 ]
 
 # Current unlock goal
@@ -89,6 +104,45 @@ def get_current_unlock_requirements():
 	
 	return cost
 
+# Recursively calculate total resource requirements for an unlock
+def get_total_unlock_requirements(unlock_name, depth):
+	# Prevent infinite recursion
+	if depth > 5:
+		quick_print("Max recursion depth reached for unlock requirements")
+		return {}
+	
+	if unlock_name == None:
+		return {}
+	
+	cost = get_cost(unlock_name)
+	if cost == None:
+		return {}
+	
+	total_requirements = {}
+	
+	# Get list of items in cost dictionary
+	cost_items = []
+	for item in cost:
+		cost_items.append(item)
+	
+	# Add direct requirements
+	for item in cost_items:
+		amount_needed = cost[item]
+		if item in total_requirements:
+			total_requirements[item] += amount_needed
+		else:
+			total_requirements[item] = amount_needed
+	
+	# Check if any of these items require other unlocks
+	# For now, we'll assume basic resources (Hay, Wood, Carrot) are available
+	# This could be expanded to check for unlock dependencies
+	
+	return total_requirements
+
+# Wrapper function to call get_total_unlock_requirements with depth 0
+def get_total_unlock_requirements_simple(unlock_name):
+	return get_total_unlock_requirements(unlock_name, 0)
+
 # Check if we should try to unlock current goal
 def should_attempt_current_unlock():
 	if current_unlock_goal == None:
@@ -138,14 +192,14 @@ def optimize_farm_for_current_unlock():
 	if not requirements:
 		return config.farm_config
 	
-	# Simple optimization: prioritize resources needed for unlock
-	# This is a basic implementation - could be much more sophisticated
-	
-	# Count how many columns we have for each resource
-	resource_columns = {}
+	# Get list of required items
 	req_items = []
 	for item in requirements:
 		req_items.append(item)
+	
+	# Count current allocation for each resource
+	resource_columns = {}
+	for item in req_items:
 		resource_columns[item] = 0
 	
 	# Count current allocation
@@ -153,40 +207,68 @@ def optimize_farm_for_current_unlock():
 		if column in config.farm_config:
 			plant = config.farm_config[column]
 			# Check what this plant produces
-			if plant == Entities.Grass and Items.Hay in requirements:
+			if plant == Entities.Grass and Items.Hay in req_items:
 				resource_columns[Items.Hay] += 1
-			elif plant == Entities.Tree and Items.Wood in requirements:
+			elif plant == Entities.Tree and Items.Wood in req_items:
 				resource_columns[Items.Wood] += 1
-			elif plant == Entities.Carrot and Items.Carrot in requirements:
+			elif plant == Entities.Carrot and Items.Carrot in req_items:
 				resource_columns[Items.Carrot] += 1
 	
+	# Simple optimization: if we need more of a resource, suggest more columns
+	optimization_suggestions = []
+	for item in req_items:
+		current_columns = resource_columns[item]
+		needed_amount = requirements[item]
+		# Simple heuristic: need at least 1 column per 10 resources needed
+		suggested_columns = max(1, needed_amount // 10)
+		if current_columns < suggested_columns:
+			optimization_suggestions.append("Need more " + str(item) + " production (have " + str(current_columns) + " columns, need ~" + str(suggested_columns) + ")")
+	
+	if optimization_suggestions:
+		quick_print("Unlock optimization suggestions:")
+		for suggestion in optimization_suggestions:
+			quick_print("  - " + suggestion)
+	
 	# For now, return the current config
-	# TODO: Implement more sophisticated optimization
+	# TODO: Implement dynamic farm layout adjustment
 	return config.farm_config
 
 # Check and attempt to unlock current goal
 def check_and_attempt_unlock():
-	if should_attempt_current_unlock():
-		success = attempt_unlock(current_unlock_goal)
+	if current_unlock_goal == None:
+		return False
+	
+	# Check if we can afford the current unlock
+	if can_afford_unlock(current_unlock_goal):
+		quick_print("Attempting to unlock: " + str(current_unlock_goal))
+		success = unlock(current_unlock_goal)
 		if success:
+			quick_print("Successfully unlocked: " + str(current_unlock_goal) + "! Moving to next goal.")
 			# Move to next unlock
 			advance_to_next_unlock()
-			quick_print("Moved to next unlock goal: " + str(current_unlock_goal))
-		return success
-	return False
+			return True
+		else:
+			quick_print("Failed to unlock: " + str(current_unlock_goal) + " (insufficient resources)")
+			return False
+	else:
+		# Show progress toward current unlock
+		progress = get_unlock_progress()
+		if progress > 50:  # Only show progress if we're making good progress
+			quick_print("Progress toward " + str(current_unlock_goal) + ": " + str(progress) + "%")
+		return False
 
 # Get debug info about current unlock status
 def get_unlock_debug_info():
 	if current_unlock_goal == None:
-		return "No unlock goal set"
+		return "All unlocks completed! 🎉"
 	
 	requirements = get_current_unlock_requirements()
 	progress = get_unlock_progress()
 	
-	info = "Goal: " + str(current_unlock_goal) + " Progress: " + str(progress) + "%"
+	info = "🎯 Goal: " + str(current_unlock_goal) + " | Progress: " + str(progress) + "%"
 	
 	if requirements:
-		info += " Requirements: "
+		info += " | Requirements: "
 		req_items = []
 		for item in requirements:
 			req_items.append(item)
@@ -194,6 +276,32 @@ def get_unlock_debug_info():
 		for item in req_items:
 			needed = requirements[item]
 			have = num_items(item)
-			info += str(item) + "(" + str(have) + "/" + str(needed) + ") "
+			if needed > 0:
+				percentage = (have / needed) * 100
+			else:
+				percentage = 100
+			info += str(item) + "(" + str(have) + "/" + str(needed) + "=" + str(percentage) + "%) "
+	
+	# Add next unlock preview
+	next_unlock = get_next_unlock_preview()
+	if next_unlock:
+		info += " | Next: " + next_unlock
 	
 	return info
+
+# Get preview of next unlock in queue
+def get_next_unlock_preview():
+	if current_unlock_index + 1 < len(unlock_priority):
+		next_unlock = unlock_priority[current_unlock_index + 1]
+		next_cost = get_cost(next_unlock)
+		if next_cost:
+			cost_str = ""
+			next_items = []
+			for item in next_cost:
+				next_items.append(item)
+			for item in next_items:
+				cost_str += str(item) + "(" + str(next_cost[item]) + ") "
+			return str(next_unlock) + "[" + cost_str + "]"
+		else:
+			return str(next_unlock)
+	return None

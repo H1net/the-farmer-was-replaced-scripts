@@ -26,8 +26,12 @@ while True:
 	
 	# Check and attempt to unlock current goal
 	unlock_start_time = get_time()
-	unlock_planner.check_and_attempt_unlock()
+	unlock_success = unlock_planner.check_and_attempt_unlock()
 	unlock_end_time = get_time()
+	
+	# If we successfully unlocked something, optimize farm layout
+	if unlock_success:
+		unlock_planner.optimize_farm_for_current_unlock()
 	
 	# Check and replant any dead pumpkins before main harvesting (now state-aware!)
 	pumpkin_start_time = get_time()
@@ -92,6 +96,6 @@ while True:
 	quick_print("Cycle completed in " + str(cycle_time) + "s, " + str(total_ticks) + " ticks, " + str(ticks_per_second) + " ticks/s")
 	quick_print("Unlock check: " + str(unlock_time) + "s, Dead pumpkin scan: " + str(pumpkin_time) + "s, Column processing: " + str(column_time) + "s")
 	
-	# Show unlock progress
+	# Show unlock progress with enhanced information
 	unlock_info = unlock_planner.get_unlock_debug_info()
-	quick_print("Unlock status: " + unlock_info)
+	quick_print("🚀 " + unlock_info)
