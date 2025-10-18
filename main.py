@@ -26,11 +26,10 @@ def process_column(entity, needs_tilling=False, hat_color=None):
 	for j in range(get_world_size()):
 		harvest_and_plant(entity, needs_tilling)
 		move(North)
-	do_a_flip()
 
 # Main farming loop
 while True:
-	print("Starting new farming cycle")
+	#print("Starting new farming cycle")
 	
 	# Column 0: Bushes (no tilling needed)
 	print("Processing Bush column")
@@ -51,3 +50,6 @@ while True:
 	print("Processing Grass column")
 	process_column(Entities.Grass, False, Hats.Green_Hat)
 	move(East)
+	
+	# Do a flip at the end of each complete cycle
+	do_a_flip()
