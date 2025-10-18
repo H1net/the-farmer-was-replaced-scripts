@@ -12,7 +12,12 @@ def can_afford_plant(entity):
 		return True  # No cost means we can afford it (like Grass)
 	
 	#print("DEBUG: Checking cost for", entity, ":", cost)
+	# Get list of items in cost dictionary
+	cost_items = []
 	for item in cost:
+		cost_items.append(item)
+	
+	for item in cost_items:
 		amount_needed = cost[item]
 		amount_have = num_items(item)
 		#print("DEBUG: Need", amount_needed, "of", item, "have", amount_have)
@@ -28,7 +33,12 @@ def get_missing_resource(entity):
 	if cost == None:
 		return None  # No cost means we can afford it
 	
+	# Get list of items in cost dictionary
+	cost_items = []
 	for item in cost:
+		cost_items.append(item)
+	
+	for item in cost_items:
 		amount_needed = cost[item]
 		if num_items(item) < amount_needed:
 			return item

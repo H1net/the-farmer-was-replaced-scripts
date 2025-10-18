@@ -49,7 +49,12 @@ def can_afford_unlock(unlock_name):
 		return True  # No cost means we can afford it
 	
 	# Check if we have all required resources
+	# Get list of items in cost dictionary
+	cost_items = []
 	for item in cost:
+		cost_items.append(item)
+	
+	for item in cost_items:
 		amount_needed = cost[item]
 		if num_items(item) < amount_needed:
 			return False
@@ -103,11 +108,19 @@ def get_unlock_progress():
 	total_needed = 0
 	total_have = 0
 	
+	# Get list of items in requirements dictionary
+	req_items = []
 	for item in requirements:
+		req_items.append(item)
+	
+	for item in req_items:
 		needed = requirements[item]
 		have = num_items(item)
 		total_needed += needed
-		total_have += min(have, needed)  # Don't count excess
+		if have < needed:
+			total_have += have
+		else:
+			total_have += needed  # Don't count excess
 	
 	if total_needed == 0:
 		return 100.0
@@ -130,7 +143,9 @@ def optimize_farm_for_current_unlock():
 	
 	# Count how many columns we have for each resource
 	resource_columns = {}
+	req_items = []
 	for item in requirements:
+		req_items.append(item)
 		resource_columns[item] = 0
 	
 	# Count current allocation
@@ -172,7 +187,11 @@ def get_unlock_debug_info():
 	
 	if requirements:
 		info += " Requirements: "
+		req_items = []
 		for item in requirements:
+			req_items.append(item)
+		
+		for item in req_items:
 			needed = requirements[item]
 			have = num_items(item)
 			info += str(item) + "(" + str(have) + "/" + str(needed) + ") "

@@ -45,25 +45,34 @@ def update_tile_state(x, y, intended_plant, actual_plant, ground_type, needs_att
 # Get all tiles with a specific plant type
 def get_tiles_by_plant(plant_type):
 	positions = []
-	for (x, y), state in farm_state.items():
-		if state['actual_plant'] == plant_type:
-			positions.append((x, y))
+	for x in range(get_world_size()):
+		for y in range(get_world_size()):
+			if (x, y) in farm_state:
+				state = farm_state[(x, y)]
+				if state['actual_plant'] == plant_type:
+					positions.append((x, y))
 	return positions
 
 # Get all tiles that need attention (resource fallbacks)
 def get_tiles_needing_attention():
 	positions = []
-	for (x, y), state in farm_state.items():
-		if state['needs_attention']:
-			positions.append((x, y))
+	for x in range(get_world_size()):
+		for y in range(get_world_size()):
+			if (x, y) in farm_state:
+				state = farm_state[(x, y)]
+				if state['needs_attention']:
+					positions.append((x, y))
 	return positions
 
 # Get tiles with specific intended plant
 def get_tiles_by_intended_plant(plant_type):
 	positions = []
-	for (x, y), state in farm_state.items():
-		if state['intended_plant'] == plant_type:
-			positions.append((x, y))
+	for x in range(get_world_size()):
+		for y in range(get_world_size()):
+			if (x, y) in farm_state:
+				state = farm_state[(x, y)]
+				if state['intended_plant'] == plant_type:
+					positions.append((x, y))
 	return positions
 
 # Check if a tile needs attention (resource fallback)
@@ -73,7 +82,7 @@ def tile_needs_attention(x, y):
 	return False
 
 # Mark a tile as needing attention
-def mark_tile_attention(x, y, needs_attention=True):
+def mark_tile_attention(x, y, needs_attention):
 	if (x, y) in farm_state:
 		farm_state[(x, y)]['needs_attention'] = needs_attention
 
@@ -91,13 +100,16 @@ def scan_tile_state(x, y):
 	return get_tile_state(x, y)
 
 # Get all tiles that haven't been checked recently
-def get_stale_tiles(max_age_ticks=1000):
+def get_stale_tiles(max_age_ticks):
 	current_tick = get_tick_count()
 	stale_tiles = []
 	
-	for (x, y), state in farm_state.items():
-		if current_tick - state['last_checked'] > max_age_ticks:
-			stale_tiles.append((x, y))
+	for x in range(get_world_size()):
+		for y in range(get_world_size()):
+			if (x, y) in farm_state:
+				state = farm_state[(x, y)]
+				if current_tick - state['last_checked'] > max_age_ticks:
+					stale_tiles.append((x, y))
 	
 	return stale_tiles
 
@@ -109,8 +121,11 @@ def clear_farm_state():
 # Debug: Print current farm state
 def debug_print_state():
 	quick_print("=== FARM STATE DEBUG ===")
-	for (x, y), state in farm_state.items():
-		if state['actual_plant'] != None or state['needs_attention']:
-			quick_print("(" + str(x) + "," + str(y) + ") intended:" + str(state['intended_plant']) + 
-						" actual:" + str(state['actual_plant']) + 
-						" attention:" + str(state['needs_attention']))
+	for x in range(get_world_size()):
+		for y in range(get_world_size()):
+			if (x, y) in farm_state:
+				state = farm_state[(x, y)]
+				if state['actual_plant'] != None or state['needs_attention']:
+					quick_print("(" + str(x) + "," + str(y) + ") intended:" + str(state['intended_plant']) + 
+								" actual:" + str(state['actual_plant']) + 
+								" attention:" + str(state['needs_attention']))
