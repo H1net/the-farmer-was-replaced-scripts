@@ -71,5 +71,5 @@ while True:
 	pumpkin_time = pumpkin_end_time - pumpkin_start_time
 	column_time = column_end_time - column_start_time
 	
-	quick_print("Cycle completed in {:.2f}s, {} ticks, {:.1f} ticks/s".format(cycle_time, total_ticks, ticks_per_second))
-	quick_print("Dead pumpkin scan: {:.3f}s, Column processing: {:.3f}s".format(pumpkin_time, column_time))
+	quick_print("Cycle completed in " + str(cycle_time) + "s, " + str(total_ticks) + " ticks, " + str(ticks_per_second) + " ticks/s")
+	quick_print("Dead pumpkin scan: " + str(pumpkin_time) + "s, Column processing: " + str(column_time) + "s")
