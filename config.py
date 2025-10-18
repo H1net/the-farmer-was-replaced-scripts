@@ -2,15 +2,17 @@
 # Configure which columns get which plants
 # Any columns not specified will default to Grass
 farm_config = {
-	1: Entities.Tree,      # Column 1: Trees
+	0: Entities.Grass,     # Column 0: Grass (foundation resource)
+	1: Entities.Grass,     # Column 1: Grass (hay production)
 	2: Entities.Tree,      # Column 2: Trees
-	3: Entities.Carrot,    # Column 3: Carrots
+	3: Entities.Tree,      # Column 3: Trees
 	4: Entities.Carrot,    # Column 4: Carrots
-	5: Entities.Sunflower, # Column 5: Sunflowers
+	5: Entities.Carrot,    # Column 5: Carrots
 	6: Entities.Sunflower, # Column 6: Sunflowers
-	7: Entities.Pumpkin,   # Column 7: Pumpkins
+	7: Entities.Sunflower, # Column 7: Sunflowers
 	8: Entities.Pumpkin,   # Column 8: Pumpkins
-	# Columns 0 and any others default to Grass for hay production
+	9: Entities.Pumpkin,   # Column 9: Pumpkins
+	# Any additional columns default to Grass for hay production
 }
 
 # Hat colors for each plant type
