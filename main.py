@@ -52,9 +52,9 @@ while True:
 	# Return to starting position (0,0) at the beginning of each cycle
 	return_to_start()
 	
-	# Column 0: Bushes (grow on grassland)
-	#print("Processing Bush column")
-	process_column(Entities.Bush, Grounds.Grassland, Hats.Brown_Hat)
+	# Column 0: Carrots (need soil)
+	#print("Processing Carrot column")
+	process_column(Entities.Carrot, Grounds.Soil, Hats.Purple_Hat)
 	move(East)
 	
 	# Column 1: Carrots (need soil)
@@ -62,9 +62,9 @@ while True:
 	process_column(Entities.Carrot, Grounds.Soil, Hats.Purple_Hat)
 	move(East)
 	
-	# Column 2: Grass (grow on grassland)
-	#print("Processing Grass column")
-	process_column(Entities.Grass, Grounds.Grassland, Hats.Green_Hat)
+	# Column 2: Carrots (need soil)
+	#print("Processing Carrot column")
+	process_column(Entities.Carrot, Grounds.Soil, Hats.Purple_Hat)
 	move(East)
 	
 	# Column 3: Trees (grow on grassland)
@@ -72,9 +72,9 @@ while True:
 	process_column(Entities.Tree, Grounds.Grassland, Hats.Gray_Hat)
 	move(East)
 	
-	# Column 4: Grass (grow on grassland)
-	#print("Processing Grass column")
-	process_column(Entities.Grass, Grounds.Grassland, Hats.Green_Hat)
+	# Column 4: Bushes (grow on grassland)
+	#print("Processing Bush column")
+	process_column(Entities.Bush, Grounds.Grassland, Hats.Brown_Hat)
 	move(East)
 	
 	# Column 5: Grass (grow on grassland)
