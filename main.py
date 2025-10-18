@@ -19,7 +19,7 @@ def harvest_and_plant(entity, needs_tilling=False):
 	else:
 		if needs_tilling and get_ground_type() != Grounds.Soil:
 			till()
-			print("Tilled soil at", pos_x, pos_y)
+			#print("Tilled soil at", pos_x, pos_y)
 		plant(entity)
 		#print("Planted", entity, "at", pos_x, pos_y)
 
