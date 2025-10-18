@@ -38,6 +38,10 @@ while True:
 		if intended_plant == Entities.Sunflower:
 			#print("DEBUG: Using special sunflower processing for column", column)
 			plant_logic.process_sunflower_column()
+		# Special handling for cacti
+		elif intended_plant == Entities.Cactus:
+			#print("DEBUG: Using special cactus processing for column", column)
+			plant_logic.process_cactus_column()
 		else:
 			# Standard processing for other plants
 			if intended_plant in config.ground_requirements:

@@ -1,6 +1,7 @@
 # ===== PLANT LOGIC FUNCTIONS =====
 # Import config for sunflower settings
 import config
+import movement
 
 # Helper function to check if we can afford a plant
 def can_afford_plant(entity):
@@ -213,3 +214,85 @@ def process_sunflower_column():
 		for j in range(get_world_size()):
 			harvest_and_plant(Entities.Sunflower, Grounds.Soil)
 			move(North)
+
+# ===== CACTUS-SPECIFIC FUNCTIONS =====
+
+# Function to check if a cactus is in sorted order
+def is_cactus_sorted():
+	# Get current cactus size
+	current_size = measure()
+	
+	# Check North neighbor (should be >= current size)
+	north_size = measure(North)
+	if north_size != -1 and north_size < current_size:
+		return False
+	
+	# Check East neighbor (should be >= current size)
+	east_size = measure(East)
+	if east_size != -1 and east_size < current_size:
+		return False
+	
+	# Check South neighbor (should be <= current size)
+	south_size = measure(South)
+	if south_size != -1 and south_size > current_size:
+		return False
+	
+	# Check West neighbor (should be <= current size)
+	west_size = measure(West)
+	if west_size != -1 and west_size > current_size:
+		return False
+	
+	return True
+
+# Function to sort cacti in a column using bubble sort
+def sort_cactus_column():
+	# Store current position
+	start_x, start_y = get_pos_x(), get_pos_y()
+	
+	# Move to bottom of column
+	for i in range(start_y):
+		move(South)
+	
+	# Bubble sort from bottom to top
+	for i in range(get_world_size() - 1):
+		for j in range(get_world_size() - 1 - i):
+			# Compare current cactus with the one above it
+			current_size = measure()
+			above_size = measure(North)
+			
+			# If current is larger than above, swap them
+			if current_size > above_size:
+				# Move up to swap
+				move(North)
+				swap(South)  # Swap with the cactus below (which is now above)
+				move(South)  # Move back down
+			
+			# Move up one position
+			if j < get_world_size() - 2 - i:  # Don't move up on last iteration
+				move(North)
+	
+	# Return to starting position
+	return_to_start()
+
+# Function to harvest cacti with recursive spread
+def harvest_cactus_with_spread():
+	# Check if current cactus is fully grown and sorted
+	if can_harvest() and is_cactus_sorted():
+		# Harvest the current cactus (this will trigger recursive spread)
+		harvest()
+		return True
+	return False
+
+# Function to process cactus column with sorting and optimal harvesting
+def process_cactus_column():
+	# First, sort the entire column
+	sort_cactus_column()
+	
+	# Then process each row for harvesting/planting
+	for j in range(get_world_size()):
+		# Try to harvest with spread first
+		if not harvest_cactus_with_spread():
+			# If no harvest, just plant a new cactus
+			harvest_and_plant(Entities.Cactus, Grounds.Soil)
+		
+		move(North)

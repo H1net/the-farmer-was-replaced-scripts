@@ -13,7 +13,7 @@ farm_config = {
 	8: Entities.Pumpkin,  
 	9: Entities.Pumpkin,   
 	10: Entities.Pumpkin,   
-	11: Entities.Carrot,   
+	11: Entities.Cactus,   
 	# Any additional columns default to Grass for hay production
 }
 
@@ -23,7 +23,8 @@ hat_colors = {
 	Entities.Tree: Hats.Gray_Hat,
 	Entities.Carrot: Hats.Purple_Hat,
 	Entities.Sunflower: Hats.Brown_Hat,
-	Entities.Pumpkin: Hats.Purple_Hat
+	Entities.Pumpkin: Hats.Purple_Hat,
+	Entities.Cactus: Hats.Brown_Hat
 }
 
 # Ground type requirements for each plant
@@ -32,7 +33,8 @@ ground_requirements = {
 	Entities.Tree: Grounds.Grassland,
 	Entities.Carrot: Grounds.Soil,
 	Entities.Sunflower: Grounds.Soil,
-	Entities.Pumpkin: Grounds.Soil
+	Entities.Pumpkin: Grounds.Soil,
+	Entities.Cactus: Grounds.Soil
 }
 
 # Sunflower harvesting configuration
