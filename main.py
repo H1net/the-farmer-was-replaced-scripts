@@ -1,5 +1,42 @@
+# Helper function to determine what to plant based on available resources
+def get_plant_to_use(intended_plant):
+	# Check what resources we have
+	wood_count = num_items(Items.Wood)
+	hay_count = num_items(Items.Hay)
+	carrot_count = num_items(Items.Carrot)
+	
+	# Resource requirements for each plant
+	if intended_plant == Entities.Grass:
+		# Grass grows automatically, but we can plant it
+		return Entities.Grass
+	elif intended_plant == Entities.Tree:
+		# Trees need wood and hay
+		if wood_count >= 1 and hay_count >= 1:
+			return Entities.Tree
+		elif wood_count < 1:
+			return Entities.Bush  # Plant bushes to get wood
+		else:
+			return Entities.Grass  # Plant grass to get hay
+	elif intended_plant == Entities.Carrot:
+		# Carrots need wood and hay
+		if wood_count >= 1 and hay_count >= 1:
+			return Entities.Carrot
+		elif wood_count < 1:
+			return Entities.Bush  # Plant bushes to get wood
+		else:
+			return Entities.Grass  # Plant grass to get hay
+	elif intended_plant == Entities.Pumpkin:
+		# Pumpkins need carrots
+		if carrot_count >= 1:
+			return Entities.Pumpkin
+		else:
+			return Entities.Carrot  # Plant carrots to get carrots for pumpkins
+	else:
+		# Default fallback
+		return Entities.Grass
+
 # Helper function to harvest and plant a specific entity
-def harvest_and_plant(entity, required_ground_type=Grounds.Grassland):
+def harvest_and_plant(intended_plant, required_ground_type=Grounds.Grassland):
 	pos_x, pos_y = get_pos_x(), get_pos_y()
 	
 	# Water the ground if water level is low (below 0.5 for good growth)
@@ -19,36 +56,32 @@ def harvest_and_plant(entity, required_ground_type=Grounds.Grassland):
 		till()  # Till to change ground type
 		#print("Changed ground to", required_ground_type, "at", pos_x, pos_y)
 	
+	# Determine what to actually plant based on available resources
+	actual_plant = get_plant_to_use(intended_plant)
+	
 	if can_harvest():
 		harvest()
 		#print("Harvested at", pos_x, pos_y)
-		
-		# Check if we have enough carrots for pumpkin planting
-		if entity == Entities.Pumpkin and num_items(Items.Carrot) < 1:
-			# Not enough carrots, plant carrots instead
-			plant(Entities.Carrot)
-			print("Not enough carrots for pumpkin, planted carrot at", pos_x, pos_y)
-		else:
-			plant(entity)
-			#print("Planted", entity, "at", pos_x, pos_y)
+		plant(actual_plant)
+		if actual_plant != intended_plant:
+			print("Planted", actual_plant, "instead of", intended_plant, "at", pos_x, pos_y)
+		#else:
+		#	print("Planted", actual_plant, "at", pos_x, pos_y)
 	else:
-		# Check if we have enough carrots for pumpkin planting
-		if entity == Entities.Pumpkin and num_items(Items.Carrot) < 1:
-			# Not enough carrots, plant carrots instead
-			plant(Entities.Carrot)
-			print("Not enough carrots for pumpkin, planted carrot at", pos_x, pos_y)
-		else:
-			plant(entity)
-			#print("Planted", entity, "at", pos_x, pos_y)
+		plant(actual_plant)
+		if actual_plant != intended_plant:
+			print("Planted", actual_plant, "instead of", intended_plant, "at", pos_x, pos_y)
+		#else:
+		#	print("Planted", actual_plant, "at", pos_x, pos_y)
 
 # Helper function to process one column
-def process_column(entity, required_ground_type=Grounds.Grassland, hat_color=None):
+def process_column(intended_plant, required_ground_type=Grounds.Grassland, hat_color=None):
 	if hat_color:
 		change_hat(hat_color)
 		#print("Changed to", hat_color, "hat")
 	
 	for j in range(get_world_size()):
-		harvest_and_plant(entity, required_ground_type)
+		harvest_and_plant(intended_plant, required_ground_type)
 		move(North)
 
 # Function to move back to starting position (0,0)
@@ -73,34 +106,34 @@ while True:
 	# Return to starting position (0,0) at the beginning of each cycle
 	return_to_start()
 	
-	# Column 0: Pumpkins (need soil)
-	#print("Processing Pumpkin column")
-	process_column(Entities.Pumpkin, Grounds.Soil, Hats.Purple_Hat)
+	# Column 0: Grass (grow on grassland)
+	#print("Processing Grass column")
+	process_column(Entities.Grass, Grounds.Grassland, Hats.Green_Hat)
 	move(East)
 	
-	# Column 1: Pumpkins (need soil)
-	#print("Processing Pumpkin column")
-	process_column(Entities.Pumpkin, Grounds.Soil, Hats.Purple_Hat)
+	# Column 1: Trees (grow on grassland)
+	#print("Processing Tree column")
+	process_column(Entities.Tree, Grounds.Grassland, Hats.Gray_Hat)
 	move(East)
 	
-	# Column 2: Pumpkins (need soil)
-	#print("Processing Pumpkin column")
-	process_column(Entities.Pumpkin, Grounds.Soil, Hats.Purple_Hat)
-	move(East)
-	
-	# Column 3: Pumpkins (need soil)
-	#print("Processing Pumpkin column")
-	process_column(Entities.Pumpkin, Grounds.Soil, Hats.Purple_Hat)
-	move(East)
-	
-	# Column 4: Carrots (need soil)
+	# Column 2: Carrots (need soil)
 	#print("Processing Carrot column")
 	process_column(Entities.Carrot, Grounds.Soil, Hats.Purple_Hat)
 	move(East)
 	
-	# Column 5: Carrots (need soil)
+	# Column 3: Carrots (need soil)
 	#print("Processing Carrot column")
 	process_column(Entities.Carrot, Grounds.Soil, Hats.Purple_Hat)
+	move(East)
+	
+	# Column 4: Pumpkins (need soil)
+	#print("Processing Pumpkin column")
+	process_column(Entities.Pumpkin, Grounds.Soil, Hats.Purple_Hat)
+	move(East)
+	
+	# Column 5: Pumpkins (need soil)
+	#print("Processing Pumpkin column")
+	process_column(Entities.Pumpkin, Grounds.Soil, Hats.Purple_Hat)
 	move(East)
 	
 	# Pet the piggy at the end of each complete cycle
