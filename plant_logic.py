@@ -100,8 +100,8 @@ def harvest_and_plant(intended_plant, required_ground_type=Grounds.Grassland):
 	actual_plant = get_plant_to_use(intended_plant)
 	
 	# Debug: Show what we're planting vs what was intended
-	#if actual_plant != intended_plant:
-		#print("Resource fallback at", pos_x, pos_y, "- intended:", intended_plant, "planting:", actual_plant)
+	if actual_plant != intended_plant:
+		quick_print("Resource fallback at " + str(pos_x) + "," + str(pos_y) + " - intended: " + str(intended_plant) + " planting: " + str(actual_plant))
 	
 	# Check if ground needs to be changed to the required type for the ACTUAL plant
 	if actual_plant in config.ground_requirements:
@@ -175,8 +175,8 @@ def find_and_harvest_best_sunflower():
 						best_sunflower_pos = (get_pos_x(), get_pos_y())
 				
 				# Move to next row
-				#if row < get_world_size() - 1:
-					#move(North)
+				if row < get_world_size() - 1:
+					move(North)
 	
 	# Return to starting position
 	current_x, current_y = get_pos_x(), get_pos_y()
@@ -196,7 +196,7 @@ def find_and_harvest_best_sunflower():
 		
 		# Harvest the best sunflower (5x power bonus)
 		harvest()
-		#print("Harvested best sunflower with", best_petal_count, "petals for 5x power bonus!")
+		quick_print("Harvested best sunflower with " + str(best_petal_count) + " petals for 5x power bonus!")
 		return True
 	
 	return False
@@ -224,22 +224,22 @@ def is_cactus_sorted():
 	
 	# Check North neighbor (should be >= current size)
 	north_size = measure(North)
-	if north_size != -1 and north_size < current_size:
+	if north_size is not None and north_size != -1 and north_size < current_size:
 		return False
 	
 	# Check East neighbor (should be >= current size)
 	east_size = measure(East)
-	if east_size != -1 and east_size < current_size:
+	if east_size is not None and east_size != -1 and east_size < current_size:
 		return False
 	
 	# Check South neighbor (should be <= current size)
 	south_size = measure(South)
-	if south_size != -1 and south_size > current_size:
+	if south_size is not None and south_size != -1 and south_size > current_size:
 		return False
 	
 	# Check West neighbor (should be <= current size)
 	west_size = measure(West)
-	if west_size != -1 and west_size > current_size:
+	if west_size is not None and west_size != -1 and west_size > current_size:
 		return False
 	
 	return True
@@ -253,23 +253,24 @@ def sort_cactus_column():
 	for i in range(start_y):
 		move(South)
 	
-	# Bubble sort from bottom to top
-	for i in range(get_world_size() - 1):
-		for j in range(get_world_size() - 1 - i):
-			# Compare current cactus with the one above it
-			current_size = measure()
-			above_size = measure(North)
-			
-			# If current is larger than above, swap them
-			if current_size > above_size:
-				# Move up to swap
-				move(North)
-				swap(South)  # Swap with the cactus below (which is now above)
-				move(South)  # Move back down
-			
-			# Move up one position
-			if j < get_world_size() - 2 - i:  # Don't move up on last iteration
-				move(North)
+		# Bubble sort from bottom to top
+		for i in range(get_world_size() - 1):
+			for j in range(get_world_size() - 1 - i):
+				# Compare current cactus with the one above it
+				current_size = measure()
+				above_size = measure(North)
+				
+				# Only swap if both sizes are valid numbers
+				if (current_size is not None and above_size is not None and 
+					current_size != -1 and above_size != -1 and current_size > above_size):
+					# Move up to swap
+					move(North)
+					swap(South)  # Swap with the cactus below (which is now above)
+					move(South)  # Move back down
+				
+				# Move up one position
+				if j < get_world_size() - 2 - i:  # Don't move up on last iteration
+					move(North)
 	
 	# Return to starting position
 	movement.return_to_start()
