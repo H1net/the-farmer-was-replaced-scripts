@@ -1,27 +1,36 @@
-seed = Entities.Bush
-do_till = False
+# Helper function to harvest and plant a specific entity
+def harvest_and_plant(entity, needs_tilling=False):
+	if can_harvest():
+		harvest()
+		if needs_tilling and get_ground_type() != Grounds.Soil:
+			till()
+		plant(entity)
+	else:
+		if needs_tilling and get_ground_type() != Grounds.Soil:
+			till()
+		plant(entity)
+
+# Helper function to process one row
+def process_row(entity, needs_tilling=False):
+	for j in range(get_world_size()):
+		harvest_and_plant(entity, needs_tilling)
+		move(North)
+	do_a_flip()
+
+# Main farming loop
 while True:
-	for i in range(get_world_size()):
-		if(i==0):
-			seed = Entities.Bush
-			do_till = False
-		elif(i==1):
-			seed = Entities.Carrot
-			do_till = True
-		elif(i==2):
-			seed = Entities.Carrot
-			do_till = True
-		else:
-			seed = Entities.Grass
-			do_till = False
-		for j in range(get_world_size()):
-			if can_harvest():
-				harvest()
-				if(do_till):
-					till()
-				plant(seed)
-			else:
-				plant(seed)
-			move(North)
-		do_a_flip()
-		move(East)
+	# Row 0: Bushes (no tilling needed)
+	process_row(Entities.Bush, False)
+	move(East)
+	
+	# Row 1: Carrots (need tilling)
+	process_row(Entities.Carrot, True)
+	move(East)
+	
+	# Row 2: Grass (no tilling needed)
+	process_row(Entities.Grass, False)
+	move(East)
+	
+	# Row 3: Grass (no tilling needed)
+	process_row(Entities.Grass, False)
+	move(East)
