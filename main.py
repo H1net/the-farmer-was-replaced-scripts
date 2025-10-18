@@ -33,10 +33,15 @@ while True:
 	if unlock_success:
 		unlock_planner.optimize_farm_for_current_unlock()
 	
-	# Check and replant any dead pumpkins before main harvesting (now state-aware!)
+	# Check and replant any dead pumpkins using intelligent movement
 	pumpkin_start_time = get_time()
 	movement.replant_dead_pumpkins()
 	pumpkin_end_time = get_time()
+	
+	# Execute all pending tasks with pathfinding optimization
+	task_start_time = get_time()
+	movement.execute_all_pending_tasks()
+	task_end_time = get_time()
 	
 	# Process each column based on configuration
 	column_start_time = get_time()
@@ -91,10 +96,11 @@ while True:
 		ticks_per_second = 0
 	unlock_time = unlock_end_time - unlock_start_time
 	pumpkin_time = pumpkin_end_time - pumpkin_start_time
+	task_time = task_end_time - task_start_time
 	column_time = column_end_time - column_start_time
 	
 	quick_print("Cycle completed in " + str(cycle_time) + "s, " + str(total_ticks) + " ticks, " + str(ticks_per_second) + " ticks/s")
-	quick_print("Unlock check: " + str(unlock_time) + "s, Dead pumpkin scan: " + str(pumpkin_time) + "s, Column processing: " + str(column_time) + "s")
+	quick_print("Unlock: " + str(unlock_time) + "s, Dead pumpkins: " + str(pumpkin_time) + "s, Tasks: " + str(task_time) + "s, Columns: " + str(column_time) + "s")
 	
 	# Show unlock progress with enhanced information
 	unlock_info = unlock_planner.get_unlock_debug_info()
