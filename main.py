@@ -22,11 +22,24 @@ def harvest_and_plant(entity, required_ground_type=Grounds.Grassland):
 	if can_harvest():
 		harvest()
 		#print("Harvested at", pos_x, pos_y)
-		plant(entity)
-		#print("Planted", entity, "at", pos_x, pos_y)
+		
+		# Check if we have enough carrots for pumpkin planting
+		if entity == Entities.Pumpkin and num_items(Items.Carrot) < 1:
+			# Not enough carrots, plant carrots instead
+			plant(Entities.Carrot)
+			print("Not enough carrots for pumpkin, planted carrot at", pos_x, pos_y)
+		else:
+			plant(entity)
+			#print("Planted", entity, "at", pos_x, pos_y)
 	else:
-		plant(entity)
-		#print("Planted", entity, "at", pos_x, pos_y)
+		# Check if we have enough carrots for pumpkin planting
+		if entity == Entities.Pumpkin and num_items(Items.Carrot) < 1:
+			# Not enough carrots, plant carrots instead
+			plant(Entities.Carrot)
+			print("Not enough carrots for pumpkin, planted carrot at", pos_x, pos_y)
+		else:
+			plant(entity)
+			#print("Planted", entity, "at", pos_x, pos_y)
 
 # Helper function to process one column
 def process_column(entity, required_ground_type=Grounds.Grassland, hat_color=None):
