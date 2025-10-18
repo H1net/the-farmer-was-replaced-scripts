@@ -57,16 +57,17 @@ def get_plant_to_use(intended_plant):
 def harvest_and_plant(intended_plant, required_ground_type=Grounds.Grassland):
 	pos_x, pos_y = get_pos_x(), get_pos_y()
 	
-	# Water the ground if water level is low (below 0.5 for good growth)
-	water_level = get_water()
-	if water_level < 0.5 and num_items(Items.Water) > 0:
-		use_item(Items.Water)
-		#print("Watered ground at", pos_x, pos_y, "- water level:", water_level)
+	# Only water trees (they grow slowly and need the help)
+	if intended_plant == Entities.Tree:
+		water_level = get_water()
+		if water_level < 0.5 and num_items(Items.Water) > 0:
+			use_item(Items.Water)
+			#print("Watered tree at", pos_x, pos_y, "- water level:", water_level)
 	
-	# Use fertilizer to speed up plant growth if available
-	if num_items(Items.Fertilizer) > 0:
-		use_item(Items.Fertilizer)
-		#print("Used fertilizer at", pos_x, pos_y)
+	# Disabled fertilizer to conserve resources
+	# if num_items(Items.Fertilizer) > 0:
+	#	use_item(Items.Fertilizer)
+	#	#print("Used fertilizer at", pos_x, pos_y)
 	
 	# Check if ground needs to be changed to the required type
 	current_ground = get_ground_type()
