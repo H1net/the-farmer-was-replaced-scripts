@@ -14,7 +14,11 @@ def get_plant_to_use(intended_plant):
 		if wood_count >= 1 and hay_count >= 1:
 			return Entities.Tree
 		elif wood_count < 1:
-			return Entities.Bush  # Plant bushes to get wood
+			# Need wood, but bushes also need wood and hay - check if we can plant bushes
+			if wood_count >= 1 and hay_count >= 1:
+				return Entities.Bush
+			else:
+				return Entities.Grass  # Plant grass to get hay, then bushes for wood
 		else:
 			return Entities.Grass  # Plant grass to get hay
 	elif intended_plant == Entities.Carrot:
@@ -22,7 +26,11 @@ def get_plant_to_use(intended_plant):
 		if wood_count >= 1 and hay_count >= 1:
 			return Entities.Carrot
 		elif wood_count < 1:
-			return Entities.Bush  # Plant bushes to get wood
+			# Need wood, but bushes also need wood and hay - check if we can plant bushes
+			if wood_count >= 1 and hay_count >= 1:
+				return Entities.Bush
+			else:
+				return Entities.Grass  # Plant grass to get hay, then bushes for wood
 		else:
 			return Entities.Grass  # Plant grass to get hay
 	elif intended_plant == Entities.Pumpkin:
@@ -30,7 +38,17 @@ def get_plant_to_use(intended_plant):
 		if carrot_count >= 1:
 			return Entities.Pumpkin
 		else:
-			return Entities.Carrot  # Plant carrots to get carrots for pumpkins
+			# Need carrots, but carrots need wood and hay - check if we can plant carrots
+			if wood_count >= 1 and hay_count >= 1:
+				return Entities.Carrot
+			elif wood_count < 1:
+				# Need wood for carrots, but bushes also need wood and hay
+				if wood_count >= 1 and hay_count >= 1:
+					return Entities.Bush
+				else:
+					return Entities.Grass  # Plant grass to get hay, then bushes for wood
+			else:
+				return Entities.Grass  # Plant grass to get hay for carrots
 	else:
 		# Default fallback
 		return Entities.Grass
