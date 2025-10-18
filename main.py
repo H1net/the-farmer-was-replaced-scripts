@@ -49,6 +49,9 @@ def return_to_start():
 while True:
 	#print("Starting new farming cycle")
 	
+	# Do a flip at the beginning of each cycle
+	do_a_flip()
+	
 	# Return to starting position (0,0) at the beginning of each cycle
 	return_to_start()
 	
@@ -82,5 +85,5 @@ while True:
 	process_column(Entities.Grass, Grounds.Grassland, Hats.Green_Hat)
 	move(East)
 	
-	# Do a flip at the end of each complete cycle
-	do_a_flip()
+	# Pet the piggy at the end of each complete cycle
+	pet_the_piggy()
