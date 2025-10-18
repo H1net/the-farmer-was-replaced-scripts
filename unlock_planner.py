@@ -16,7 +16,8 @@ current_unlock_index = 0
 
 # Initialize unlock planner
 def initialize_unlock_planner():
-	global current_unlock_goal, current_unlock_index
+	global current_unlock_goal
+	global current_unlock_index
 	current_unlock_index = 0
 	if len(unlock_priority) > 0:
 		current_unlock_goal = unlock_priority[0]
@@ -29,7 +30,8 @@ def get_current_unlock_goal():
 
 # Move to next unlock in priority list
 def advance_to_next_unlock():
-	global current_unlock_goal, current_unlock_index
+	global current_unlock_goal
+	global current_unlock_index
 	current_unlock_index += 1
 	if current_unlock_index < len(unlock_priority):
 		current_unlock_goal = unlock_priority[current_unlock_index]
