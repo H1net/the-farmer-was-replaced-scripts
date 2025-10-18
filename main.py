@@ -17,8 +17,8 @@ def harvest_and_plant(entity, needs_tilling=False):
 		plant(entity)
 		#print("Planted", entity, "at", pos_x, pos_y)
 
-# Helper function to process one row
-def process_row(entity, needs_tilling=False, hat_color=None):
+# Helper function to process one column
+def process_column(entity, needs_tilling=False, hat_color=None):
 	if hat_color:
 		change_hat(hat_color)
 		#print("Changed to", hat_color, "hat")
@@ -32,22 +32,22 @@ def process_row(entity, needs_tilling=False, hat_color=None):
 while True:
 	print("Starting new farming cycle")
 	
-	# Row 0: Bushes (no tilling needed)
-	print("Processing Bush row")
-	process_row(Entities.Bush, False, Hats.Brown_Hat)
+	# Column 0: Bushes (no tilling needed)
+	print("Processing Bush column")
+	process_column(Entities.Bush, False, Hats.Brown_Hat)
 	move(East)
 	
-	# Row 1: Carrots (need tilling)
-	print("Processing Carrot row")
-	process_row(Entities.Carrot, True, Hats.Purple_Hat)
+	# Column 1: Carrots (need tilling)
+	print("Processing Carrot column")
+	process_column(Entities.Carrot, True, Hats.Purple_Hat)
 	move(East)
 	
-	# Row 2: Grass (no tilling needed)
-	print("Processing Grass row")
-	process_row(Entities.Grass, False, Hats.Green_Hat)
+	# Column 2: Grass (no tilling needed)
+	print("Processing Grass column")
+	process_column(Entities.Grass, False, Hats.Green_Hat)
 	move(East)
 	
-	# Row 3: Grass (no tilling needed)
-	print("Processing Grass row")
-	process_row(Entities.Grass, False, Hats.Green_Hat)
+	# Column 3: Grass (no tilling needed)
+	print("Processing Grass column")
+	process_column(Entities.Grass, False, Hats.Green_Hat)
 	move(East)
