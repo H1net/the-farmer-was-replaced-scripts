@@ -52,14 +52,14 @@ while True:
 	# Return to starting position (0,0) at the beginning of each cycle
 	return_to_start()
 	
-	# Column 0: Carrots (need soil)
-	#print("Processing Carrot column")
-	process_column(Entities.Carrot, Grounds.Soil, Hats.Purple_Hat)
+	# Column 0: Pumpkins (need soil)
+	#print("Processing Pumpkin column")
+	process_column(Entities.Pumpkin, Grounds.Soil, Hats.Purple_Hat)
 	move(East)
 	
-	# Column 1: Carrots (need soil)
-	#print("Processing Carrot column")
-	process_column(Entities.Carrot, Grounds.Soil, Hats.Purple_Hat)
+	# Column 1: Pumpkins (need soil)
+	#print("Processing Pumpkin column")
+	process_column(Entities.Pumpkin, Grounds.Soil, Hats.Purple_Hat)
 	move(East)
 	
 	# Column 2: Carrots (need soil)
