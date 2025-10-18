@@ -57,42 +57,23 @@ while True:
 	performance_optimize.optimize_farm_operations()
 	optimization_end_time = get_time()
 	
-	# Process each column based on configuration
-	column_start_time = get_time()
-	for column in range(get_world_size()):
-		# Get the intended plant for this column, default to Grass if not specified
-		if column in config.farm_config:
-			intended_plant = config.farm_config[column]
-		else:
-			intended_plant = Entities.Grass
-		
-		#print("DEBUG: Processing column", column, "intended plant:", intended_plant)
-		
-		# Special handling for sunflowers
-		if intended_plant == Entities.Sunflower:
-			#print("DEBUG: Using special sunflower processing for column", column)
-			plant_logic.process_sunflower_column()
-		# Special handling for cacti
-		elif intended_plant == Entities.Cactus:
-			#print("DEBUG: Using special cactus processing for column", column)
-			plant_logic.process_cactus_column()
-		else:
-			# Standard processing for other plants
-			if intended_plant in config.ground_requirements:
-				required_ground = config.ground_requirements[intended_plant]
-			else:
-				required_ground = Grounds.Grassland
-				
-			if intended_plant in config.hat_colors:
-				hat_color = config.hat_colors[intended_plant]
-			else:
-				hat_color = Hats.Green_Hat
-			
-			#print("DEBUG: Using standard processing for column", column, "-", intended_plant)
-			plant_logic.process_column(intended_plant, required_ground, hat_color)
-		
-		move(East)
+	# The new intelligent task-based system handles all farming operations
+	# The old column-by-column approach is now replaced by:
+	# 1. Task queue system (movement.py) - handles all harvesting and planting
+	# 2. State management (state_manager.py) - tracks what's planted where
+	# 3. Resource management (resource_manager.py) - handles resource needs
+	# 4. Performance optimization (performance_optimize.py) - optimizes operations
+	# 5. Unlock planning (unlock_planner.py) - manages progression
 	
+	# The system now works by:
+	# - Adding tasks to the queue based on farm state
+	# - Executing tasks with optimal pathfinding
+	# - Managing resources proactively
+	# - Optimizing performance with lazy evaluation
+	
+	# No more manual column processing needed!
+	column_start_time = get_time()
+	# Task-based system handles everything automatically
 	column_end_time = get_time()
 	
 	# Pet the piggy at the end of each complete cycle

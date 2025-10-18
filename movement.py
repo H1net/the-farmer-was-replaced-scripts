@@ -4,6 +4,7 @@
 # Import config to access farm_config
 import config
 import state_manager
+import plant_logic
 
 # ===== TASK QUEUE SYSTEM =====
 
@@ -96,7 +97,10 @@ def execute_task_queue():
 	global task_queue
 	
 	if not task_queue:
+		quick_print("No tasks in queue")
 		return
+	
+	quick_print("Executing " + str(len(task_queue)) + " tasks")
 	
 	# Sort tasks by priority (lower number = higher priority)
 	# Simple bubble sort for compatibility
@@ -141,6 +145,12 @@ def execute_task(task):
 			execute_sunflower_check(target_x, target_y)
 		elif task_type == 'check_cactus':
 			execute_cactus_check(target_x, target_y)
+		elif task_type == 'plant_sunflower':
+			execute_plant_sunflower_task(target_x, target_y, plant_type)
+		elif task_type == 'plant_cactus':
+			execute_plant_cactus_task(target_x, target_y, plant_type)
+		elif task_type == 'plant_standard':
+			execute_plant_standard_task(target_x, target_y, plant_type)
 
 # Execute harvest task at specific position
 def execute_harvest_task(x, y, plant_type):
@@ -182,6 +192,38 @@ def execute_cactus_check(x, y):
 	if entity_type == Entities.Cactus:
 		size = measure()
 		quick_print("Cactus at " + str(x) + "," + str(y) + " size: " + str(size))
+
+# Execute sunflower planting task at specific position
+def execute_plant_sunflower_task(x, y, plant_type):
+	# Use the existing plant_logic functions for specialized planting
+	plant_logic.process_sunflower_column()
+	# Update state
+	state_manager.update_tile_state(x, y, plant_type, plant_type, Grounds.Soil, False)
+
+# Execute cactus planting task at specific position
+def execute_plant_cactus_task(x, y, plant_type):
+	# Use the existing plant_logic functions for specialized planting
+	plant_logic.process_cactus_column()
+	# Update state
+	state_manager.update_tile_state(x, y, plant_type, plant_type, Grounds.Soil, False)
+
+# Execute standard planting task at specific position
+def execute_plant_standard_task(x, y, plant_type):
+	# Get required ground type and hat color
+	if plant_type in config.ground_requirements:
+		required_ground = config.ground_requirements[plant_type]
+	else:
+		required_ground = Grounds.Grassland
+		
+	if plant_type in config.hat_colors:
+		hat_color = config.hat_colors[plant_type]
+	else:
+		hat_color = Hats.Green_Hat
+	
+	# Use the existing plant_logic function for standard planting
+	plant_logic.process_column(plant_type, required_ground, hat_color)
+	# Update state
+	state_manager.update_tile_state(x, y, plant_type, plant_type, required_ground, False)
 
 # ===== TARGETED SCAN FUNCTIONS =====
 
@@ -229,8 +271,49 @@ def add_cactus_tasks():
 	if positions:
 		add_task('check_cactus', positions, None, 4)
 
+# Add planting tasks based on farm configuration
+def add_planting_tasks():
+	# Get all columns that need planting based on config
+	planting_positions = []
+	
+	for column in range(get_world_size()):
+		# Get intended plant for this column
+		if column in config.farm_config:
+			intended_plant = config.farm_config[column]
+		else:
+			intended_plant = Entities.Grass
+		
+		# Check each row in this column
+		for row in range(get_world_size()):
+			pos = (column, row)
+			
+			# Check if this tile needs the intended plant
+			state = state_manager.get_tile_state(column, row)
+			if state == None:
+				# No state recorded, needs initial planting
+				planting_positions.append((pos, intended_plant))
+			else:
+				if state['intended_plant'] != intended_plant or state['actual_plant'] != intended_plant:
+					# Tile has wrong plant or no plant, needs replanting
+					planting_positions.append((pos, intended_plant))
+	
+	# Add planting tasks for each position
+	if planting_positions:
+		quick_print("Adding " + str(len(planting_positions)) + " planting tasks")
+		for pos, plant_type in planting_positions:
+			if plant_type == Entities.Sunflower:
+				add_task('plant_sunflower', [pos], plant_type, 5)
+			elif plant_type == Entities.Cactus:
+				add_task('plant_cactus', [pos], plant_type, 5)
+			else:
+				add_task('plant_standard', [pos], plant_type, 5)
+	else:
+		quick_print("No planting tasks needed - farm is up to date")
+
 # Execute all pending tasks efficiently
 def execute_all_pending_tasks():
+	quick_print("Starting task execution cycle")
+	
 	# Add harvest tasks for all plant types
 	add_harvest_tasks(Entities.Grass)
 	add_harvest_tasks(Entities.Tree)
@@ -243,8 +326,13 @@ def execute_all_pending_tasks():
 	add_sunflower_tasks()
 	add_cactus_tasks()
 	
+	# Add planting tasks based on farm configuration
+	add_planting_tasks()
+	
 	# Execute all tasks with pathfinding
 	execute_task_queue()
+	
+	quick_print("Task execution cycle complete")
 
 # Get movement efficiency statistics
 def get_movement_stats():
