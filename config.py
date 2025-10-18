@@ -3,7 +3,7 @@
 # Any columns not specified will default to Grass
 farm_config = {
 	0: Entities.Sunflower,
-	1: Entities.Grass, 
+	1: Entities.Sunflower, 
 	2: Entities.Grass,
 	3: Entities.Tree,
 	4: Entities.Tree,

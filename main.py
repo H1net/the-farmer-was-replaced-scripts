@@ -6,11 +6,13 @@ import movement
 import state_manager
 import unlock_planner
 import resource_manager
+import performance_optimize
 
 # Initialize systems
 state_manager.initialize_farm_state()
 unlock_planner.initialize_unlock_planner()
 resource_manager.initialize_resource_manager()
+performance_optimize.initialize_performance_optimizer()
 
 # ===== MAIN FARMING LOOP =====
 while True:
@@ -49,6 +51,11 @@ while True:
 	task_start_time = get_time()
 	movement.execute_all_pending_tasks()
 	task_end_time = get_time()
+	
+	# Optimize farm operations for performance
+	optimization_start_time = get_time()
+	performance_optimize.optimize_farm_operations()
+	optimization_end_time = get_time()
 	
 	# Process each column based on configuration
 	column_start_time = get_time()
@@ -105,10 +112,11 @@ while True:
 	resource_time = resource_end_time - resource_start_time
 	pumpkin_time = pumpkin_end_time - pumpkin_start_time
 	task_time = task_end_time - task_start_time
+	optimization_time = optimization_end_time - optimization_start_time
 	column_time = column_end_time - column_start_time
 	
 	quick_print("Cycle completed in " + str(cycle_time) + "s, " + str(total_ticks) + " ticks, " + str(ticks_per_second) + " ticks/s")
-	quick_print("Unlock: " + str(unlock_time) + "s, Resources: " + str(resource_time) + "s, Dead pumpkins: " + str(pumpkin_time) + "s, Tasks: " + str(task_time) + "s, Columns: " + str(column_time) + "s")
+	quick_print("Unlock: " + str(unlock_time) + "s, Resources: " + str(resource_time) + "s, Dead pumpkins: " + str(pumpkin_time) + "s, Tasks: " + str(task_time) + "s, Optimization: " + str(optimization_time) + "s, Columns: " + str(column_time) + "s")
 	
 	# Show unlock progress with enhanced information
 	unlock_info = unlock_planner.get_unlock_debug_info()
@@ -126,3 +134,14 @@ while True:
 					" Wood=" + str(resource_stats['current_resources'][Items.Wood]) + 
 					" Carrot=" + str(resource_stats['current_resources'][Items.Carrot]) + 
 					" Power=" + str(resource_stats['current_resources'][Items.Power]))
+	
+	# Show performance statistics every 20 cycles
+	if cycle_count % 20 == 0:
+		performance_stats = performance_optimize.get_performance_stats()
+		quick_print("⚡ Performance: Efficiency=" + str(performance_stats['efficiency_score']) + 
+					"% TilesChecked=" + str(performance_stats['tiles_checked']) + 
+					" TilesSkipped=" + str(performance_stats['tiles_skipped']) + 
+					" BatchOps=" + str(performance_stats['batch_operations']))
+		
+		# Update cycle metrics
+		performance_optimize.update_cycle_metrics(cycle_time)
