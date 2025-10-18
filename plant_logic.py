@@ -133,10 +133,10 @@ def harvest_and_plant(intended_plant, required_ground_type=Grounds.Grassland):
 	# Update state after planting
 	state_manager.update_tile_state(
 		pos_x, pos_y,
-		intended_plant=intended_plant,
-		actual_plant=actual_plant,
-		ground_type=actual_ground_required,
-		needs_attention=(actual_plant != intended_plant)
+		intended_plant,
+		actual_plant,
+		actual_ground_required,
+		(actual_plant != intended_plant)
 	)
 
 # Helper function to process one column

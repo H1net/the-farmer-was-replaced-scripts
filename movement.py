@@ -49,13 +49,13 @@ def replant_dead_pumpkins():
 				plant(Entities.Pumpkin)
 				quick_print("Replanted pumpkin at " + str(x) + "," + str(y))
 				# Update state
-				state_manager.update_tile_state(x, y, actual_plant=Entities.Pumpkin, needs_attention=False)
+				state_manager.update_tile_state(x, y, Entities.Pumpkin, Entities.Pumpkin, Grounds.Soil, False)
 			else:
 				# No carrots available, plant carrot instead
 				plant(Entities.Carrot)
 				quick_print("Planted carrot (no carrots for pumpkin) at " + str(x) + "," + str(y))
 				# Update state
-				state_manager.update_tile_state(x, y, actual_plant=Entities.Carrot, needs_attention=True)
+				state_manager.update_tile_state(x, y, Entities.Pumpkin, Entities.Carrot, Grounds.Soil, True)
 	
 	# Return to starting position
 	return_to_start()

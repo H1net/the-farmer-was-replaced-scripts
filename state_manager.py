@@ -21,7 +21,7 @@ def initialize_farm_state():
 			}
 
 # Update state for a specific tile
-def update_tile_state(x, y, intended_plant=None, actual_plant=None, ground_type=None, needs_attention=False):
+def update_tile_state(x, y, intended_plant, actual_plant, ground_type, needs_attention):
 	global farm_state
 	
 	if (x, y) not in farm_state:
@@ -35,13 +35,10 @@ def update_tile_state(x, y, intended_plant=None, actual_plant=None, ground_type=
 	
 	current_tick = get_tick_count()
 	
-	if intended_plant != None:
-		farm_state[(x, y)]['intended_plant'] = intended_plant
-	if actual_plant != None:
-		farm_state[(x, y)]['actual_plant'] = actual_plant
-	if ground_type != None:
-		farm_state[(x, y)]['ground_type'] = ground_type
-	
+	# Update all provided values
+	farm_state[(x, y)]['intended_plant'] = intended_plant
+	farm_state[(x, y)]['actual_plant'] = actual_plant
+	farm_state[(x, y)]['ground_type'] = ground_type
 	farm_state[(x, y)]['last_checked'] = current_tick
 	farm_state[(x, y)]['needs_attention'] = needs_attention
 
