@@ -128,12 +128,14 @@ def execute_task(task):
 		plant_type = task['plant_type']
 	
 	if not positions:
+		quick_print("Task " + task_type + " has no positions, skipping")
 		return
 	
 	# Find the closest position to current location
 	closest_pos = find_closest_position(positions)
 	if closest_pos:
 		target_x, target_y = closest_pos
+		quick_print("Executing " + task_type + " at " + str(target_x) + "," + str(target_y))
 		move_to_position(target_x, target_y)
 		
 		# Execute the specific task
@@ -151,6 +153,8 @@ def execute_task(task):
 			execute_plant_cactus_task(target_x, target_y, plant_type)
 		elif task_type == 'plant_standard':
 			execute_plant_standard_task(target_x, target_y, plant_type)
+	else:
+		quick_print("No closest position found for " + task_type)
 
 # Execute harvest task at specific position
 def execute_harvest_task(x, y, plant_type):
@@ -195,35 +199,33 @@ def execute_cactus_check(x, y):
 
 # Execute sunflower planting task at specific position
 def execute_plant_sunflower_task(x, y, plant_type):
-	# Use the existing plant_logic functions for specialized planting
-	plant_logic.process_sunflower_column()
+	# Plant sunflower at current position (we're already at the target)
+	plant_logic.harvest_and_plant(plant_type, Grounds.Soil)
 	# Update state
 	state_manager.update_tile_state(x, y, plant_type, plant_type, Grounds.Soil, False)
+	quick_print("Planted sunflower at " + str(x) + "," + str(y))
 
 # Execute cactus planting task at specific position
 def execute_plant_cactus_task(x, y, plant_type):
-	# Use the existing plant_logic functions for specialized planting
-	plant_logic.process_cactus_column()
+	# Plant cactus at current position (we're already at the target)
+	plant_logic.harvest_and_plant(plant_type, Grounds.Soil)
 	# Update state
 	state_manager.update_tile_state(x, y, plant_type, plant_type, Grounds.Soil, False)
+	quick_print("Planted cactus at " + str(x) + "," + str(y))
 
 # Execute standard planting task at specific position
 def execute_plant_standard_task(x, y, plant_type):
-	# Get required ground type and hat color
+	# Get required ground type
 	if plant_type in config.ground_requirements:
 		required_ground = config.ground_requirements[plant_type]
 	else:
 		required_ground = Grounds.Grassland
-		
-	if plant_type in config.hat_colors:
-		hat_color = config.hat_colors[plant_type]
-	else:
-		hat_color = Hats.Green_Hat
 	
-	# Use the existing plant_logic function for standard planting
-	plant_logic.process_column(plant_type, required_ground, hat_color)
+	# Plant at current position (we're already at the target)
+	plant_logic.harvest_and_plant(plant_type, required_ground)
 	# Update state
 	state_manager.update_tile_state(x, y, plant_type, plant_type, required_ground, False)
+	quick_print("Planted " + str(plant_type) + " at " + str(x) + "," + str(y))
 
 # ===== TARGETED SCAN FUNCTIONS =====
 
@@ -258,6 +260,7 @@ def add_harvest_tasks(plant_type):
 	positions = state_manager.get_tiles_by_plant(plant_type)
 	if positions:
 		add_task('harvest_plant', positions, plant_type, 2)
+		quick_print("Added harvest tasks for " + str(plant_type) + ": " + str(len(positions)) + " positions")
 
 # Add sunflower optimization tasks
 def add_sunflower_tasks():
