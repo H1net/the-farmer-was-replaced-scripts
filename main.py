@@ -70,24 +70,24 @@ while True:
 	process_column(Entities.Pumpkin, Grounds.Soil, Hats.Purple_Hat)
 	move(East)
 	
-	# Column 2: Carrots (need soil)
+	# Column 2: Pumpkins (need soil)
+	#print("Processing Pumpkin column")
+	process_column(Entities.Pumpkin, Grounds.Soil, Hats.Purple_Hat)
+	move(East)
+	
+	# Column 3: Carrots (need soil)
 	#print("Processing Carrot column")
 	process_column(Entities.Carrot, Grounds.Soil, Hats.Purple_Hat)
 	move(East)
 	
-	# Column 3: Trees (grow on grassland)
-	#print("Processing Tree column")
-	process_column(Entities.Tree, Grounds.Grassland, Hats.Gray_Hat)
+	# Column 4: Carrots (need soil)
+	#print("Processing Carrot column")
+	process_column(Entities.Carrot, Grounds.Soil, Hats.Purple_Hat)
 	move(East)
 	
-	# Column 4: Bushes (grow on grassland)
-	#print("Processing Bush column")
-	process_column(Entities.Bush, Grounds.Grassland, Hats.Brown_Hat)
-	move(East)
-	
-	# Column 5: Grass (grow on grassland)
-	#print("Processing Grass column")
-	process_column(Entities.Grass, Grounds.Grassland, Hats.Green_Hat)
+	# Column 5: Carrots (need soil)
+	#print("Processing Carrot column")
+	process_column(Entities.Carrot, Grounds.Soil, Hats.Purple_Hat)
 	move(East)
 	
 	# Pet the piggy at the end of each complete cycle
