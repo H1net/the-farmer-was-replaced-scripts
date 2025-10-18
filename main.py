@@ -1,20 +1,3 @@
-# ===== FARM CONFIGURATION =====
-# Configure which columns get which plants
-# Any columns not assigned will default to Bushes
-farm_config = {
-	Entities.Carrot: [1, 2],  # Carrots in columns 1 and 2
-	Entities.Grass: [4, 5],    # Grass in columns 4 and 5
-	# Columns 0 and 3 will default to Bushes
-}
-
-# Hat colors for each plant type
-hat_colors = {
-	Entities.Bush: Hats.Brown_Hat,
-	Entities.Carrot: Hats.Purple_Hat,
-	Entities.Grass: Hats.Green_Hat
-}
-
-# ===== HELPER FUNCTIONS =====
 # Helper function to harvest and plant a specific entity
 def harvest_and_plant(entity, needs_tilling=False):
 	pos_x, pos_y = get_pos_x(), get_pos_y()
@@ -30,7 +13,7 @@ def harvest_and_plant(entity, needs_tilling=False):
 		#print("Harvested at", pos_x, pos_y)
 		if needs_tilling and get_ground_type() != Grounds.Soil:
 			till()
-			#print("Tilled soil at", pos_x, pos_y)
+			print("Tilled soil at", pos_x, pos_y)
 		plant(entity)
 		#print("Planted", entity, "at", pos_x, pos_y)
 	else:
@@ -50,30 +33,54 @@ def process_column(entity, needs_tilling=False, hat_color=None):
 		harvest_and_plant(entity, needs_tilling)
 		move(North)
 
-# Function to determine what plant goes in each column
-def get_plant_for_column(column):
-	for entity, columns in farm_config.items():
-		if column in columns:
-			return entity
-	return Entities.Bush  # Default to Bush
+# Function to move back to starting position (0,0)
+def return_to_start():
+	current_x, current_y = get_pos_x(), get_pos_y()
+	
+	# Move west to get to x=0
+	for i in range(current_x):
+		move(West)
+	
+	# Move south to get to y=0  
+	for i in range(current_y):
+		move(South)
 
-# Function to check if a plant needs tilling
-def needs_tilling(entity):
-	return entity == Entities.Carrot
-
-# ===== MAIN FARMING LOOP =====
+# Main farming loop
 while True:
 	#print("Starting new farming cycle")
 	
-	# Process each column based on configuration
-	for column in range(get_world_size()):
-		entity = get_plant_for_column(column)
-		needs_till = needs_tilling(entity)
-		hat_color = hat_colors.get(entity, Hats.Brown_Hat)
-		
-		#print("Processing column", column, "-", entity)
-		process_column(entity, needs_till, hat_color)
-		move(East)
+	# Return to starting position (0,0) at the beginning of each cycle
+	return_to_start()
+	
+	# Column 0: Bushes (no tilling needed)
+	#print("Processing Bush column")
+	process_column(Entities.Bush, False, Hats.Brown_Hat)
+	move(East)
+	
+	# Column 1: Carrots (need tilling)
+	#print("Processing Carrot column")
+	process_column(Entities.Carrot, True, Hats.Purple_Hat)
+	move(East)
+	
+	# Column 2: Grass (no tilling needed)
+	#print("Processing Grass column")
+	process_column(Entities.Grass, False, Hats.Green_Hat)
+	move(East)
+	
+	# Column 3: Trees (no tilling needed)
+	#print("Processing Tree column")
+	process_column(Entities.Tree, False, Hats.Gray_Hat)
+	move(East)
+	
+	# Column 4: Grass (no tilling needed)
+	#print("Processing Grass column")
+	process_column(Entities.Grass, False, Hats.Green_Hat)
+	move(East)
+	
+	# Column 5: Grass (no tilling needed)
+	#print("Processing Grass column")
+	process_column(Entities.Grass, False, Hats.Green_Hat)
+	move(East)
 	
 	# Do a flip at the end of each complete cycle
 	do_a_flip()
