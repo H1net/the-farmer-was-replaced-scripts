@@ -261,6 +261,11 @@ def add_harvest_tasks(plant_type):
 	if positions:
 		add_task('harvest_plant', positions, plant_type, 2)
 		quick_print("Added harvest tasks for " + str(plant_type) + ": " + str(len(positions)) + " positions")
+		return len(positions)
+	else:
+		# Check if there are any plants of this type that might be ready but not in state
+		quick_print("No harvest tasks for " + str(plant_type) + " - checking if any exist")
+	return 0
 
 # Add sunflower optimization tasks
 def add_sunflower_tasks():
@@ -296,8 +301,10 @@ def add_planting_tasks():
 				# No state recorded, needs initial planting
 				planting_positions.append((pos, intended_plant))
 			else:
-				if state['intended_plant'] != intended_plant or state['actual_plant'] != intended_plant:
-					# Tile has wrong plant or no plant, needs replanting
+				# Only replant if the tile is empty or has a completely different plant
+				current_plant = state['actual_plant']
+				if current_plant == None or current_plant != intended_plant:
+					# Tile is empty or has wrong plant, needs planting
 					planting_positions.append((pos, intended_plant))
 	
 	# Add planting tasks for each position
@@ -318,12 +325,15 @@ def execute_all_pending_tasks():
 	quick_print("Starting task execution cycle")
 	
 	# Add harvest tasks for all plant types
-	add_harvest_tasks(Entities.Grass)
-	add_harvest_tasks(Entities.Tree)
-	add_harvest_tasks(Entities.Carrot)
-	add_harvest_tasks(Entities.Pumpkin)
-	add_harvest_tasks(Entities.Sunflower)
-	add_harvest_tasks(Entities.Cactus)
+	harvest_count = 0
+	harvest_count += add_harvest_tasks(Entities.Grass)
+	harvest_count += add_harvest_tasks(Entities.Tree)
+	harvest_count += add_harvest_tasks(Entities.Carrot)
+	harvest_count += add_harvest_tasks(Entities.Pumpkin)
+	harvest_count += add_harvest_tasks(Entities.Sunflower)
+	harvest_count += add_harvest_tasks(Entities.Cactus)
+	
+	quick_print("Total harvest tasks: " + str(harvest_count))
 	
 	# Add optimization tasks
 	add_sunflower_tasks()
