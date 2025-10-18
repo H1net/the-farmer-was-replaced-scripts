@@ -4,8 +4,8 @@
 farm_config = {
 	0: Entities.Grass,
 	1: Entities.Grass, 
-	2: Entities.Pumpkin,
-	3: Entities.Pumpkin,
+	2: Entities.Grass,
+	3: Entities.Tree,
 	4: Entities.Tree,
 	5: Entities.Tree,
 	6: Entities.Carrot,
