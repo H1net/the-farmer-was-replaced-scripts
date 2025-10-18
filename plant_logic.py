@@ -272,7 +272,7 @@ def sort_cactus_column():
 				move(North)
 	
 	# Return to starting position
-	return_to_start()
+	movement.return_to_start()
 
 # Function to harvest cacti with recursive spread
 def harvest_cactus_with_spread():
