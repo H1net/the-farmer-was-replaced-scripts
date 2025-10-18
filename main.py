@@ -1,3 +1,33 @@
+# ===== FARM CONFIGURATION =====
+# Configure which columns get which plants
+# Any columns not specified will default to Grass
+farm_config = {
+	1: Entities.Tree,      # Column 1: Trees
+	2: Entities.Carrot,    # Column 2: Carrots
+	3: Entities.Carrot,    # Column 3: Carrots
+	4: Entities.Carrot,    # Column 4: Carrots
+	5: Entities.Pumpkin,   # Column 5: Pumpkins
+	6: Entities.Pumpkin,   # Column 6: Pumpkins
+	7: Entities.Pumpkin,   # Column 7: Pumpkins
+}
+
+# Hat colors for each plant type
+hat_colors = {
+	Entities.Grass: Hats.Green_Hat,
+	Entities.Tree: Hats.Gray_Hat,
+	Entities.Carrot: Hats.Purple_Hat,
+	Entities.Pumpkin: Hats.Purple_Hat
+}
+
+# Ground type requirements for each plant
+ground_requirements = {
+	Entities.Grass: Grounds.Grassland,
+	Entities.Tree: Grounds.Grassland,
+	Entities.Carrot: Grounds.Soil,
+	Entities.Pumpkin: Grounds.Soil
+}
+
+# ===== HELPER FUNCTIONS =====
 # Helper function to determine what to plant based on available resources
 def get_plant_to_use(intended_plant):
 	# Check what resources we have
@@ -115,7 +145,7 @@ def return_to_start():
 	for i in range(current_y):
 		move(South)
 
-# Main farming loop
+# ===== MAIN FARMING LOOP =====
 while True:
 	#print("Starting new farming cycle")
 	
@@ -125,45 +155,27 @@ while True:
 	# Return to starting position (0,0) at the beginning of each cycle
 	return_to_start()
 	
-	# Column 0: Grass (grow on grassland)
-	#print("Processing Grass column")
-	process_column(Entities.Grass, Grounds.Grassland, Hats.Green_Hat)
-	move(East)
-	
-	# Column 1: Trees (grow on grassland)
-	#print("Processing Tree column")
-	process_column(Entities.Tree, Grounds.Grassland, Hats.Gray_Hat)
-	move(East)
-	
-	# Column 2: Carrots (need soil)
-	#print("Processing Carrot column")
-	process_column(Entities.Carrot, Grounds.Soil, Hats.Purple_Hat)
-	move(East)
-	
-	# Column 3: Carrots (need soil)
-	#print("Processing Carrot column")
-	process_column(Entities.Carrot, Grounds.Soil, Hats.Purple_Hat)
-	move(East)
-	
-	# Column 4: Carrots (need soil)
-	#print("Processing Carrot column")
-	process_column(Entities.Carrot, Grounds.Soil, Hats.Purple_Hat)
-	move(East)
-	
-	# Column 5: Pumpkins (need soil)
-	#print("Processing Pumpkin column")
-	process_column(Entities.Pumpkin, Grounds.Soil, Hats.Purple_Hat)
-	move(East)
-	
-	# Column 6: Pumpkins (need soil)
-	#print("Processing Pumpkin column")
-	process_column(Entities.Pumpkin, Grounds.Soil, Hats.Purple_Hat)
-	move(East)
-	
-	# Column 7: Pumpkins (need soil)
-	#print("Processing Pumpkin column")
-	process_column(Entities.Pumpkin, Grounds.Soil, Hats.Purple_Hat)
-	move(East)
+	# Process each column based on configuration
+	for column in range(get_world_size()):
+		# Get the intended plant for this column, default to Grass if not specified
+		if column in farm_config:
+			intended_plant = farm_config[column]
+		else:
+			intended_plant = Entities.Grass
+		
+		if intended_plant in ground_requirements:
+			required_ground = ground_requirements[intended_plant]
+		else:
+			required_ground = Grounds.Grassland
+			
+		if intended_plant in hat_colors:
+			hat_color = hat_colors[intended_plant]
+		else:
+			hat_color = Hats.Green_Hat
+		
+		#print("Processing column", column, "-", intended_plant)
+		process_column(intended_plant, required_ground, hat_color)
+		move(East)
 	
 	# Pet the piggy at the end of each complete cycle
 	pet_the_piggy()
