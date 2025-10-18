@@ -8,6 +8,11 @@ def harvest_and_plant(entity, required_ground_type=Grounds.Grassland):
 		use_item(Items.Water)
 		#print("Watered ground at", pos_x, pos_y, "- water level:", water_level)
 	
+	# Use fertilizer to speed up plant growth if available
+	if num_items(Items.Fertilizer) > 0:
+		use_item(Items.Fertilizer)
+		#print("Used fertilizer at", pos_x, pos_y)
+	
 	# Check if ground needs to be changed to the required type
 	current_ground = get_ground_type()
 	if current_ground != required_ground_type:
