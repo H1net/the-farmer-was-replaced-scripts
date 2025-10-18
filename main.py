@@ -2,6 +2,12 @@
 def harvest_and_plant(entity, needs_tilling=False):
 	pos_x, pos_y = get_pos_x(), get_pos_y()
 	
+	# Water the ground if water level is low (below 0.5 for good growth)
+	water_level = get_water()
+	if water_level < 0.5 and num_items(Items.Water) > 0:
+		use_item(Items.Water)
+		#print("Watered ground at", pos_x, pos_y, "- water level:", water_level)
+	
 	if can_harvest():
 		harvest()
 		#print("Harvested at", pos_x, pos_y)
