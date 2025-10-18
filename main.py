@@ -135,14 +135,14 @@ while True:
 	process_column(Entities.Tree, Grounds.Grassland, Hats.Gray_Hat)
 	move(East)
 	
-	# Column 2: Trees (grow on grassland)
-	#print("Processing Tree column")
-	process_column(Entities.Tree, Grounds.Grassland, Hats.Gray_Hat)
+	# Column 2: Carrots (need soil)
+	#print("Processing Carrot column")
+	process_column(Entities.Carrot, Grounds.Soil, Hats.Purple_Hat)
 	move(East)
 	
-	# Column 3: Trees (grow on grassland)
-	#print("Processing Tree column")
-	process_column(Entities.Tree, Grounds.Grassland, Hats.Gray_Hat)
+	# Column 3: Carrots (need soil)
+	#print("Processing Carrot column")
+	process_column(Entities.Carrot, Grounds.Soil, Hats.Purple_Hat)
 	move(East)
 	
 	# Column 4: Carrots (need soil)
@@ -150,9 +150,9 @@ while True:
 	process_column(Entities.Carrot, Grounds.Soil, Hats.Purple_Hat)
 	move(East)
 	
-	# Column 5: Carrots (need soil)
-	#print("Processing Carrot column")
-	process_column(Entities.Carrot, Grounds.Soil, Hats.Purple_Hat)
+	# Column 5: Pumpkins (need soil)
+	#print("Processing Pumpkin column")
+	process_column(Entities.Pumpkin, Grounds.Soil, Hats.Purple_Hat)
 	move(East)
 	
 	# Column 6: Pumpkins (need soil)
