@@ -39,15 +39,15 @@ def replant_dead_pumpkins():
 			# Check if it's a dead pumpkin (can't harvest but is a pumpkin entity)
 			# Also check if it's a regular pumpkin that can't be harvested (might be dead)
 			if entity_type == Entities.Dead_Pumpkin or (entity_type == Entities.Pumpkin and not can_harvest()):
-				print("Found dead/dying pumpkin at", get_pos_x(), get_pos_y(), "- replanting")
+				#print("Found dead/dying pumpkin at", get_pos_x(), get_pos_y(), "- replanting")
 				# Plant a new pumpkin (this automatically removes the dead one)
 				if num_items(Items.Carrot) >= 1:
 					plant(Entities.Pumpkin)
-					print("Replanted pumpkin at", get_pos_x(), get_pos_y())
+					#print("Replanted pumpkin at", get_pos_x(), get_pos_y())
 				else:
 					# No carrots available, plant carrot instead
 					plant(Entities.Carrot)
-					print("Planted carrot (no carrots for pumpkin) at", get_pos_x(), get_pos_y())
+					#print("Planted carrot (no carrots for pumpkin) at", get_pos_x(), get_pos_y())
 			
 			# Move to next row
 			if row < get_world_size() - 1:

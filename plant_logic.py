@@ -6,18 +6,18 @@ import config
 def can_afford_plant(entity):
 	cost = get_cost(entity)
 	if cost == None:
-		print("DEBUG: No cost for", entity, "- can afford")
+		#print("DEBUG: No cost for", entity, "- can afford")
 		return True  # No cost means we can afford it (like Grass)
 	
-	print("DEBUG: Checking cost for", entity, ":", cost)
+	#print("DEBUG: Checking cost for", entity, ":", cost)
 	for item in cost:
 		amount_needed = cost[item]
 		amount_have = num_items(item)
-		print("DEBUG: Need", amount_needed, "of", item, "have", amount_have)
+		#print("DEBUG: Need", amount_needed, "of", item, "have", amount_have)
 		if amount_have < amount_needed:
-			print("DEBUG: Cannot afford", entity, "- need", amount_needed, "of", item, "but only have", amount_have)
+			#print("DEBUG: Cannot afford", entity, "- need", amount_needed, "of", item, "but only have", amount_have)
 			return False
-	print("DEBUG: Can afford", entity)
+	#print("DEBUG: Can afford", entity)
 	return True
 
 # Helper function to find missing resources
@@ -43,7 +43,7 @@ def find_plant_for_missing_resource(missing_item):
 def get_plant_to_use(intended_plant, depth=0):
 	# Prevent infinite recursion
 	if depth > 10:
-		print("Max recursion depth reached for", intended_plant, "- falling back to grass")
+		#print("Max recursion depth reached for", intended_plant, "- falling back to grass")
 		return Entities.Grass
 	
 	# Special case: Grass has no cost
@@ -52,8 +52,8 @@ def get_plant_to_use(intended_plant, depth=0):
 	
 	# Check if we can afford the intended plant
 	if can_afford_plant(intended_plant):
-		if depth > 0:
-			print("Can afford", intended_plant, "after", depth, "fallbacks")
+		#if depth > 0:
+			#print("Can afford", intended_plant, "after", depth, "fallbacks")
 		return intended_plant
 	
 	# Find what resource we're missing
@@ -61,19 +61,19 @@ def get_plant_to_use(intended_plant, depth=0):
 	
 	# Safety check: if we can't determine missing resource, fallback to grass
 	if missing_item == None:
-		print("Cannot determine missing resource for", intended_plant, "- falling back to grass")
+		#print("Cannot determine missing resource for", intended_plant, "- falling back to grass")
 		return Entities.Grass
 	
 	# Debug: Show what resource is missing
-	if depth == 0:
-		print("Cannot afford", intended_plant, "- missing", missing_item, "need", num_items(missing_item), "more")
+	#if depth == 0:
+		#print("Cannot afford", intended_plant, "- missing", missing_item, "need", num_items(missing_item), "more")
 	
 	# Find what plant produces that resource
 	fallback_plant = find_plant_for_missing_resource(missing_item)
 	
 	# Safety check: if fallback is the same as intended, we have a circular dependency
 	if fallback_plant == intended_plant:
-		print("Circular dependency detected for", intended_plant, "- falling back to grass")
+		#print("Circular dependency detected for", intended_plant, "- falling back to grass")
 		return Entities.Grass
 	
 	# Recursively check if we can afford the fallback
@@ -99,8 +99,8 @@ def harvest_and_plant(intended_plant, required_ground_type=Grounds.Grassland):
 	actual_plant = get_plant_to_use(intended_plant)
 	
 	# Debug: Show what we're planting vs what was intended
-	if actual_plant != intended_plant:
-		print("Resource fallback at", pos_x, pos_y, "- intended:", intended_plant, "planting:", actual_plant)
+	#if actual_plant != intended_plant:
+		#print("Resource fallback at", pos_x, pos_y, "- intended:", intended_plant, "planting:", actual_plant)
 	
 	# Check if ground needs to be changed to the required type for the ACTUAL plant
 	if actual_plant in config.ground_requirements:
@@ -111,20 +111,20 @@ def harvest_and_plant(intended_plant, required_ground_type=Grounds.Grassland):
 	current_ground = get_ground_type()
 	if current_ground != actual_ground_required:
 		till()  # Till to change ground type
-		print("Tilled ground to", actual_ground_required, "for", actual_plant, "at", pos_x, pos_y)
+		#print("Tilled ground to", actual_ground_required, "for", actual_plant, "at", pos_x, pos_y)
 	
 	if can_harvest():
 		harvest()
 		#print("Harvested at", pos_x, pos_y)
 		plant(actual_plant)
-		if actual_plant != intended_plant:
-			print("Planted", actual_plant, "instead of", intended_plant, "at", pos_x, pos_y)
+		#if actual_plant != intended_plant:
+			#print("Planted", actual_plant, "instead of", intended_plant, "at", pos_x, pos_y)
 		#else:
 		#	print("Planted", actual_plant, "at", pos_x, pos_y)
 	else:
 		plant(actual_plant)
-		if actual_plant != intended_plant:
-			print("Planted", actual_plant, "instead of", intended_plant, "at", pos_x, pos_y)
+		#if actual_plant != intended_plant:
+			#print("Planted", actual_plant, "instead of", intended_plant, "at", pos_x, pos_y)
 		#else:
 		#	print("Planted", actual_plant, "at", pos_x, pos_y)
 
@@ -174,8 +174,8 @@ def find_and_harvest_best_sunflower():
 						best_sunflower_pos = (get_pos_x(), get_pos_y())
 				
 				# Move to next row
-				if row < get_world_size() - 1:
-					move(North)
+				#if row < get_world_size() - 1:
+					#move(North)
 	
 	# Return to starting position
 	current_x, current_y = get_pos_x(), get_pos_y()
@@ -195,7 +195,7 @@ def find_and_harvest_best_sunflower():
 		
 		# Harvest the best sunflower (5x power bonus)
 		harvest()
-		print("Harvested best sunflower with", best_petal_count, "petals for 5x power bonus!")
+		#print("Harvested best sunflower with", best_petal_count, "petals for 5x power bonus!")
 		return True
 	
 	return False

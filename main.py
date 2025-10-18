@@ -20,7 +20,7 @@ while True:
 	
 	# Check and replant any dead pumpkins before main harvesting
 	pumpkin_start_time = get_time()
-	movement.replant_dead_pumpkins()
+	#movement.replant_dead_pumpkins()
 	pumpkin_end_time = get_time()
 	
 	# Process each column based on configuration
@@ -32,11 +32,11 @@ while True:
 		else:
 			intended_plant = Entities.Grass
 		
-		print("DEBUG: Processing column", column, "intended plant:", intended_plant)
+		#print("DEBUG: Processing column", column, "intended plant:", intended_plant)
 		
 		# Special handling for sunflowers
 		if intended_plant == Entities.Sunflower:
-			print("DEBUG: Using special sunflower processing for column", column)
+			#print("DEBUG: Using special sunflower processing for column", column)
 			plant_logic.process_sunflower_column()
 		else:
 			# Standard processing for other plants
@@ -50,7 +50,7 @@ while True:
 			else:
 				hat_color = Hats.Green_Hat
 			
-			print("DEBUG: Using standard processing for column", column, "-", intended_plant)
+			#print("DEBUG: Using standard processing for column", column, "-", intended_plant)
 			plant_logic.process_column(intended_plant, required_ground, hat_color)
 		
 		move(East)

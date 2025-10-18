@@ -2,7 +2,7 @@
 # Configure which columns get which plants
 # Any columns not specified will default to Grass
 farm_config = {
-	0: Entities.Grass,
+	0: Entities.Sunflower,
 	1: Entities.Grass, 
 	2: Entities.Grass,
 	3: Entities.Tree,
@@ -13,7 +13,7 @@ farm_config = {
 	8: Entities.Pumpkin,  
 	9: Entities.Pumpkin,   
 	10: Entities.Pumpkin,   
-	11: Entities.Sunflower,   
+	11: Entities.Carrot,   
 	# Any additional columns default to Grass for hay production
 }
 
