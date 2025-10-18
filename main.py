@@ -32,22 +32,22 @@ while True:
 	#print("Starting new farming cycle")
 	
 	# Column 0: Bushes (no tilling needed)
-	print("Processing Bush column")
+	#print("Processing Bush column")
 	process_column(Entities.Bush, False, Hats.Brown_Hat)
 	move(East)
 	
 	# Column 1: Carrots (need tilling)
-	print("Processing Carrot column")
+	#print("Processing Carrot column")
 	process_column(Entities.Carrot, True, Hats.Purple_Hat)
 	move(East)
 	
 	# Column 2: Grass (no tilling needed)
-	print("Processing Grass column")
+	#print("Processing Grass column")
 	process_column(Entities.Grass, False, Hats.Green_Hat)
 	move(East)
 	
 	# Column 3: Grass (no tilling needed)
-	print("Processing Grass column")
+	#print("Processing Grass column")
 	process_column(Entities.Grass, False, Hats.Green_Hat)
 	move(East)
 	
