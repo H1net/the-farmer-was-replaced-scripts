@@ -3,6 +3,12 @@
 import config
 import plant_logic
 import movement
+import state_manager
+import unlock_planner
+
+# Initialize systems
+state_manager.initialize_farm_state()
+unlock_planner.initialize_unlock_planner()
 
 # ===== MAIN FARMING LOOP =====
 while True:
@@ -18,9 +24,14 @@ while True:
 	# Return to starting position (0,0) at the beginning of each cycle
 	movement.return_to_start()
 	
-	# Check and replant any dead pumpkins before main harvesting
+	# Check and attempt to unlock current goal
+	unlock_start_time = get_time()
+	unlock_planner.check_and_attempt_unlock()
+	unlock_end_time = get_time()
+	
+	# Check and replant any dead pumpkins before main harvesting (now state-aware!)
 	pumpkin_start_time = get_time()
-	#movement.replant_dead_pumpkins()
+	movement.replant_dead_pumpkins()
 	pumpkin_end_time = get_time()
 	
 	# Process each column based on configuration
@@ -74,8 +85,13 @@ while True:
 		ticks_per_second = total_ticks / cycle_time
 	else:
 		ticks_per_second = 0
+	unlock_time = unlock_end_time - unlock_start_time
 	pumpkin_time = pumpkin_end_time - pumpkin_start_time
 	column_time = column_end_time - column_start_time
 	
 	quick_print("Cycle completed in " + str(cycle_time) + "s, " + str(total_ticks) + " ticks, " + str(ticks_per_second) + " ticks/s")
-	quick_print("Dead pumpkin scan: " + str(pumpkin_time) + "s, Column processing: " + str(column_time) + "s")
+	quick_print("Unlock check: " + str(unlock_time) + "s, Dead pumpkin scan: " + str(pumpkin_time) + "s, Column processing: " + str(column_time) + "s")
+	
+	# Show unlock progress
+	unlock_info = unlock_planner.get_unlock_debug_info()
+	quick_print("Unlock status: " + unlock_info)

@@ -2,6 +2,7 @@
 # Import config for sunflower settings
 import config
 import movement
+import state_manager
 
 # Helper function to check if we can afford a plant
 def can_afford_plant(entity):
@@ -128,6 +129,15 @@ def harvest_and_plant(intended_plant, required_ground_type=Grounds.Grassland):
 			#print("Planted", actual_plant, "instead of", intended_plant, "at", pos_x, pos_y)
 		#else:
 		#	print("Planted", actual_plant, "at", pos_x, pos_y)
+	
+	# Update state after planting
+	state_manager.update_tile_state(
+		pos_x, pos_y,
+		intended_plant=intended_plant,
+		actual_plant=actual_plant,
+		ground_type=actual_ground_required,
+		needs_attention=(actual_plant != intended_plant)
+	)
 
 # Helper function to process one column
 def process_column(intended_plant, required_ground_type=Grounds.Grassland, hat_color=None):
