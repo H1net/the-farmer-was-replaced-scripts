@@ -64,7 +64,10 @@ while True:
 	
 	cycle_time = end_time - start_time
 	total_ticks = end_ticks - start_ticks
-	ticks_per_second = total_ticks / cycle_time if cycle_time > 0 else 0
+	if cycle_time > 0:
+		ticks_per_second = total_ticks / cycle_time
+	else:
+		ticks_per_second = 0
 	pumpkin_time = pumpkin_end_time - pumpkin_start_time
 	column_time = column_end_time - column_start_time
 	
