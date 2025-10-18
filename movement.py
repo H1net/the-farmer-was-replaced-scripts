@@ -11,7 +11,7 @@ import state_manager
 task_queue = []
 
 # Add a task to the queue
-def add_task(task_type, positions, plant_type=None, priority=1):
+def add_task(task_type, positions, plant_type, priority):
 	global task_queue
 	task = {
 		'type': task_type,
@@ -215,19 +215,19 @@ def replant_dead_pumpkins():
 def add_harvest_tasks(plant_type):
 	positions = state_manager.get_tiles_by_plant(plant_type)
 	if positions:
-		add_task('harvest_plant', positions, plant_type, priority=2)
+		add_task('harvest_plant', positions, plant_type, 2)
 
 # Add sunflower optimization tasks
 def add_sunflower_tasks():
 	positions = state_manager.get_tiles_by_plant(Entities.Sunflower)
 	if positions:
-		add_task('check_sunflowers', positions, None, priority=3)
+		add_task('check_sunflowers', positions, None, 3)
 
 # Add cactus optimization tasks
 def add_cactus_tasks():
 	positions = state_manager.get_tiles_by_plant(Entities.Cactus)
 	if positions:
-		add_task('check_cactus', positions, None, priority=4)
+		add_task('check_cactus', positions, None, 4)
 
 # Execute all pending tasks efficiently
 def execute_all_pending_tasks():
