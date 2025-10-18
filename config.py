@@ -31,3 +31,10 @@ ground_requirements = {
 
 # Sunflower harvesting configuration
 sunflower_harvest_threshold = 10  # Minimum sunflowers before optimal harvesting
+
+# Maps items to plants that produce them
+resource_producers = {
+	Items.Hay: Entities.Grass,
+	Items.Wood: Entities.Bush,  # Could also be Tree, but Bush is simpler
+	Items.Carrot: Entities.Carrot
+}

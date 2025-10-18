@@ -2,72 +2,55 @@
 # Import config for sunflower settings
 import config
 
+# Helper function to check if we can afford a plant
+def can_afford_plant(entity):
+	cost = get_cost(entity)
+	if cost == None:
+		return True  # No cost means we can afford it (like Grass)
+	
+	for item in cost:
+		amount_needed = cost[item]
+		if num_items(item) < amount_needed:
+			return False
+	return True
+
+# Helper function to find missing resources
+def get_missing_resource(entity):
+	cost = get_cost(entity)
+	if cost == None:
+		return None  # No cost means we can afford it
+	
+	for item in cost:
+		amount_needed = cost[item]
+		if num_items(item) < amount_needed:
+			return item
+	return None
+
+# Helper function to find plant for missing resource
+def find_plant_for_missing_resource(missing_item):
+	if missing_item in config.resource_producers:
+		return config.resource_producers[missing_item]
+	else:
+		return Entities.Grass  # Fallback to grass
+
 # Helper function to determine what to plant based on available resources
 def get_plant_to_use(intended_plant):
-	# Check what resources we have
-	wood_count = num_items(Items.Wood)
-	hay_count = num_items(Items.Hay)
-	carrot_count = num_items(Items.Carrot)
-	
-	# Resource requirements for each plant
+	# Special case: Grass has no cost
 	if intended_plant == Entities.Grass:
-		# Grass grows automatically, but we can plant it
 		return Entities.Grass
-	elif intended_plant == Entities.Tree:
-		# Trees need wood and hay
-		if wood_count >= 1 and hay_count >= 1:
-			return Entities.Tree
-		elif wood_count < 1:
-			# Need wood, but bushes also need wood and hay - check if we can plant bushes
-			if wood_count >= 1 and hay_count >= 1:
-				return Entities.Bush
-			else:
-				return Entities.Grass  # Plant grass to get hay, then bushes for wood
-		else:
-			return Entities.Grass  # Plant grass to get hay
-	elif intended_plant == Entities.Carrot:
-		# Carrots need wood and hay
-		if wood_count >= 1 and hay_count >= 1:
-			return Entities.Carrot
-		elif wood_count < 1:
-			# Need wood, but bushes also need wood and hay - check if we can plant bushes
-			if wood_count >= 1 and hay_count >= 1:
-				return Entities.Bush
-			else:
-				return Entities.Grass  # Plant grass to get hay, then bushes for wood
-		else:
-			return Entities.Grass  # Plant grass to get hay
-	elif intended_plant == Entities.Sunflower:
-		# Sunflowers need wood and hay (same as carrots)
-		if wood_count >= 1 and hay_count >= 1:
-			return Entities.Sunflower
-		elif wood_count < 1:
-			# Need wood, but bushes also need wood and hay - check if we can plant bushes
-			if wood_count >= 1 and hay_count >= 1:
-				return Entities.Bush
-			else:
-				return Entities.Grass  # Plant grass to get hay, then bushes for wood
-		else:
-			return Entities.Grass  # Plant grass to get hay
-	elif intended_plant == Entities.Pumpkin:
-		# Pumpkins need carrots
-		if carrot_count >= 1:
-			return Entities.Pumpkin
-		else:
-			# Need carrots, but carrots need wood and hay - check if we can plant carrots
-			if wood_count >= 1 and hay_count >= 1:
-				return Entities.Carrot
-			elif wood_count < 1:
-				# Need wood for carrots, but bushes also need wood and hay
-				if wood_count >= 1 and hay_count >= 1:
-					return Entities.Bush
-				else:
-					return Entities.Grass  # Plant grass to get hay, then bushes for wood
-			else:
-				return Entities.Grass  # Plant grass to get hay for carrots
-	else:
-		# Default fallback
-		return Entities.Grass
+	
+	# Check if we can afford the intended plant
+	if can_afford_plant(intended_plant):
+		return intended_plant
+	
+	# Find what resource we're missing
+	missing_item = get_missing_resource(intended_plant)
+	
+	# Find what plant produces that resource
+	fallback_plant = find_plant_for_missing_resource(missing_item)
+	
+	# Recursively check if we can afford the fallback
+	return get_plant_to_use(fallback_plant)
 
 # Helper function to harvest and plant a specific entity
 def harvest_and_plant(intended_plant, required_ground_type=Grounds.Grassland):
