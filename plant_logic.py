@@ -37,6 +37,7 @@ def find_plant_for_missing_resource(missing_item):
 def get_plant_to_use(intended_plant, depth=0):
 	# Prevent infinite recursion
 	if depth > 10:
+		print("Max recursion depth reached for", intended_plant, "- falling back to grass")
 		return Entities.Grass
 	
 	# Special case: Grass has no cost
@@ -45,6 +46,8 @@ def get_plant_to_use(intended_plant, depth=0):
 	
 	# Check if we can afford the intended plant
 	if can_afford_plant(intended_plant):
+		if depth > 0:
+			print("Can afford", intended_plant, "after", depth, "fallbacks")
 		return intended_plant
 	
 	# Find what resource we're missing
@@ -52,13 +55,19 @@ def get_plant_to_use(intended_plant, depth=0):
 	
 	# Safety check: if we can't determine missing resource, fallback to grass
 	if missing_item == None:
+		print("Cannot determine missing resource for", intended_plant, "- falling back to grass")
 		return Entities.Grass
+	
+	# Debug: Show what resource is missing
+	if depth == 0:
+		print("Cannot afford", intended_plant, "- missing", missing_item, "need", num_items(missing_item), "more")
 	
 	# Find what plant produces that resource
 	fallback_plant = find_plant_for_missing_resource(missing_item)
 	
 	# Safety check: if fallback is the same as intended, we have a circular dependency
 	if fallback_plant == intended_plant:
+		print("Circular dependency detected for", intended_plant, "- falling back to grass")
 		return Entities.Grass
 	
 	# Recursively check if we can afford the fallback
@@ -80,14 +89,23 @@ def harvest_and_plant(intended_plant, required_ground_type=Grounds.Grassland):
 	#	use_item(Items.Fertilizer)
 	#	#print("Used fertilizer at", pos_x, pos_y)
 	
-	# Check if ground needs to be changed to the required type
-	current_ground = get_ground_type()
-	if current_ground != required_ground_type:
-		till()  # Till to change ground type
-		#print("Changed ground to", required_ground_type, "at", pos_x, pos_y)
-	
 	# Determine what to actually plant based on available resources
 	actual_plant = get_plant_to_use(intended_plant)
+	
+	# Debug: Show what we're planting vs what was intended
+	if actual_plant != intended_plant:
+		print("Resource fallback at", pos_x, pos_y, "- intended:", intended_plant, "planting:", actual_plant)
+	
+	# Check if ground needs to be changed to the required type for the ACTUAL plant
+	if actual_plant in config.ground_requirements:
+		actual_ground_required = config.ground_requirements[actual_plant]
+	else:
+		actual_ground_required = Grounds.Grassland
+	
+	current_ground = get_ground_type()
+	if current_ground != actual_ground_required:
+		till()  # Till to change ground type
+		print("Tilled ground to", actual_ground_required, "for", actual_plant, "at", pos_x, pos_y)
 	
 	if can_harvest():
 		harvest()
