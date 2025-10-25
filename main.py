@@ -1,30 +1,19 @@
 # ===== MAIN FARMING SCRIPT =====
 # Import configuration and helper modules
 import config
-import plant_logic
+# import plant_logic
 import movement
 
-def create_maze():
-	clear()
-	
-	for i in range(get_world_size()):
-		plant(Entities.Bush)
-		
-		while get_water()<0.9:
-			use_item(Items.Water)
-		
-		move(North)
-	
-	for i in range(get_world_size()):
-		while can_harvest()==False:
-			pass
-		
-		while get_entity_type()==Entities.Bush:
-			if num_items(Items.Fertilizer)==0:
-				trade(Items.Fertilizer)
-				#if num_items(Items.Fertilizer)==0:
-					#main()
-			
-			use_item(Items.Fertilizer)
+from plant_logic import create_maze, treasure_hunt
 
-	treasure_hunt()
+times = 30
+
+#for i in range(times):
+	
+	#create_maze()
+	#treasure_hunt()
+
+while True:
+	if create_maze():
+		if treasure_hunt():
+			continue
