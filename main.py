@@ -24,6 +24,7 @@
 
 # set_world_size(16)
 # set_world_size(32)
+clear()
 
 ROWS = get_world_size()
 COLS = get_world_size()
