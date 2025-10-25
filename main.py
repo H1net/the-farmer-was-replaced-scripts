@@ -612,7 +612,9 @@ def _clear_all():
 
 def dinosaur2():
 	#change_hat(Hats.Dinosaur_Hat)
-	x, y = measure()
+	pos = measure()
+	x = pos[0]
+	y = pos[1]
 	while True:
 		go_to2(x, y)
 		if get_pos_x() != x or get_pos_y() != y:
@@ -629,7 +631,9 @@ def dinosaur2():
 
 		if measure() == None:
 			harvest()
-		x, y = measure()
+		pos = measure()
+		x = pos[0]
+		y = pos[1]
 		
 	
 
