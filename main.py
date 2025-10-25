@@ -1,7 +1,8 @@
 # ===== MAIN FARMING SCRIPT =====
 # Import configuration and helper modules
 import config
-import plant_logic
+# import plant_logic
+import maze
 import movement
 
 # from plant_logic import create_maze, treasure_hunt
@@ -14,6 +15,6 @@ times = 30
 	#treasure_hunt()
 
 while True:
-	if plant_logic.create_maze():
-		if plant_logic.treasure_hunt():
+	if maze.create_maze():
+		if maze.treasure_hunt():
 			continue
