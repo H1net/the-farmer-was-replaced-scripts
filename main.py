@@ -4,78 +4,27 @@ import config
 import plant_logic
 import movement
 
-# ===== MAIN FARMING LOOP =====
-while True:
-	# Start timing measurements
-	start_time = get_time()
-	start_ticks = get_tick_count()
+def create_maze():
+	clear()
 	
-	#print("Starting new farming cycle")
-	
-	# Do a flip at the beginning of each cycle
-	do_a_flip()
-	
-	# Return to starting position (0,0) at the beginning of each cycle
-	movement.return_to_start()
-	
-	# Check and replant any dead pumpkins before main harvesting
-	pumpkin_start_time = get_time()
-	#movement.replant_dead_pumpkins()
-	pumpkin_end_time = get_time()
-	
-	# Process each column based on configuration
-	column_start_time = get_time()
-	for column in range(get_world_size()):
-		# Get the intended plant for this column, default to Grass if not specified
-		if column in config.farm_config:
-			intended_plant = config.farm_config[column]
-		else:
-			intended_plant = Entities.Grass
+	for i in range(get_world_size()):
+		plant(Entities.Bush)
 		
-		#print("DEBUG: Processing column", column, "intended plant:", intended_plant)
+		while get_water()<0.9:
+			use_item(Items.Water)
 		
-		# Special handling for sunflowers
-		if intended_plant == Entities.Sunflower:
-			#print("DEBUG: Using special sunflower processing for column", column)
-			plant_logic.process_sunflower_column()
-		# Special handling for cacti
-		elif intended_plant == Entities.Cactus:
-			#print("DEBUG: Using special cactus processing for column", column)
-			plant_logic.process_cactus_column()
-		else:
-			# Standard processing for other plants
-			if intended_plant in config.ground_requirements:
-				required_ground = config.ground_requirements[intended_plant]
-			else:
-				required_ground = Grounds.Grassland
-				
-			if intended_plant in config.hat_colors:
-				hat_color = config.hat_colors[intended_plant]
-			else:
-				hat_color = Hats.Green_Hat
+		move(North)
+	
+	for i in range(get_world_size()):
+		while can_harvest()==False:
+			pass
+		
+		while get_entity_type()==Entities.Bush:
+			if num_items(Items.Fertilizer)==0:
+				trade(Items.Fertilizer)
+				#if num_items(Items.Fertilizer)==0:
+					#main()
 			
-			#print("DEBUG: Using standard processing for column", column, "-", intended_plant)
-			plant_logic.process_column(intended_plant, required_ground, hat_color)
-		
-		move(East)
-	
-	column_end_time = get_time()
-	
-	# Pet the piggy at the end of each complete cycle
-	pet_the_piggy()
-	
-	# End timing measurements and report
-	end_time = get_time()
-	end_ticks = get_tick_count()
-	
-	cycle_time = end_time - start_time
-	total_ticks = end_ticks - start_ticks
-	if cycle_time > 0:
-		ticks_per_second = total_ticks / cycle_time
-	else:
-		ticks_per_second = 0
-	pumpkin_time = pumpkin_end_time - pumpkin_start_time
-	column_time = column_end_time - column_start_time
-	
-	quick_print("Cycle completed in " + str(cycle_time) + "s, " + str(total_ticks) + " ticks, " + str(ticks_per_second) + " ticks/s")
-	quick_print("Dead pumpkin scan: " + str(pumpkin_time) + "s, Column processing: " + str(column_time) + "s")
+			use_item(Items.Fertilizer)
+
+	treasure_hunt()
